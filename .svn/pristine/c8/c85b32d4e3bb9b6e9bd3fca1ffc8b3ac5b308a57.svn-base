@@ -1,0 +1,30 @@
+<div class='sw-tables' customattr='scroll'>
+	<div class='for-table_wrap' custombody='normal'>
+		<section ng-repeat='table in data track by $index'>
+			<p>{{table.title}}</p>
+			<table>
+				<thead>
+					<tr>
+						<th ng-repeat='tabth in table.tableHead track by $index' width='{{tabth.wid}}'>{{tabth.name}}</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat='tabbody in table.tableLine track by $index'>
+						<td>{{tabbody.num}}</td>
+						<td>{{tabbody.serial}}</td>
+						<td>{{tabbody.location}}</td>
+						<td>{{tabbody.time}}</td>
+						<td>{{tabbody.temperature}}</td>
+						<td>{{tabbody.humidity}}</td>
+						<td>{{tabbody.windspeed}}</td>
+						<td>{{tabbody.rainfall}}</td>
+						<td>{{tabbody.visibility}}</td>
+						<td>{{tabbody.pavetemperature}}</td>
+						<td>{{tabbody.status}}</td>
+						<td ng-bind-html='tabbody.operation | trustHtml'></td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+	</div>
+</div>

@@ -1,0 +1,38 @@
+package com.boco.interceptor;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
+
+
+public class CheckLoginInterceptor implements HandlerInterceptor {
+
+	public void afterCompletion(HttpServletRequest arg0,
+			HttpServletResponse arg1, Object arg2, Exception arg3)	throws Exception {
+		
+	}
+
+	public void postHandle(HttpServletRequest arg0, HttpServletResponse arg1,
+			Object arg2, ModelAndView arg3) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
+			Object arg2) throws Exception {
+		// TODO Auto-generated method stub
+//		lzzf_base_user user = (lzzf_base_user)request.getSession().getAttribute("admin");
+//		if (user == null){
+//			System.out.println("session不存在，跳转到登录页面");
+//			response.sendRedirect(request.getContextPath() + "/login/toLogin.from");
+//			return false;			
+//		} else {
+//			return true;
+//		}
+		
+		return true;
+	}
+
+}

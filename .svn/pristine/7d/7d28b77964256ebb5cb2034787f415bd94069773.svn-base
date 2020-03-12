@@ -1,0 +1,226 @@
+(function(angular) {
+
+	var filters = angular.module('app.filters', []);
+
+	filters
+// 过滤器：修改显示文字
+	.filter('ipreview', function () {
+	    return function (val, wid, hei, fontFamily, fontSize, fontColor, iconsArr) {
+	    	if(fontFamily && fontFamily != ''){
+	    		$('preview cms').css('font-family', fontFamily);
+	    	}
+	    	if(fontColor && fontColor != ''){
+	    		$('preview cms').css('color', fontColor);
+	    	}
+	    	var iconsCount = 0;
+	    	if(iconsArr && iconsArr != '' && iconsArr.length != 0){
+    			iconsCount = iconsArr.length;
+	    		if(iconsArr.length > 1){
+	    			iconsCount = 1;
+	    		}
+	    		$('preview cms').css({
+	    			left: hei + 'px',
+	    			width: wid - hei * iconsCount
+	    		});
+	    	} else {
+	    		$('preview cms').css({
+	    			left: 0,
+	    			width: wid + 'px'
+	    		});
+	    	}
+	    	wid = wid - hei * iconsCount;
+			var _cms = $('preview cms div');
+			$('editwindow tips').html('');
+			var _val = $.trim(val).replace(/\n+/g,'\n'),
+				_a_txta = _val.split('\n'),
+            	_txta_l = _a_txta.length,
+            	_a_txta_last = _a_txta[_txta_l - 1],
+            	_fz;
+            if(fontSize && fontSize != '' && fontSize != 'auto'){
+            	_fz = fontSize;
+            	// 检查文字字数
+            } else {
+	            _fz = getFontSize(wid, hei, _txta_l, _a_txta_last);
+	            if(!_fz){
+	                $('editwindow tips').html('文字过多');
+	                return;
+	            }
+	        }
+
+            // 退格时，当前行没有文字时触发
+			if($('textarea[nIndex]').attr('nIndex') == _val.length){
+				$('textarea[nIndex]').attr({
+					'nIndex': _val.lastIndexOf('\n'),
+					'nRow': _txta_l
+				});
+				$('preview cms').find('p').remove();
+				for(var i = 0, l = _txta_l - 1; i < l; i++){
+					// if(_a_txta[i] == ''){
+					// 	_a_txta[i] = '&nbsp;';
+					// }
+					var _p = $('<p>').html(_a_txta[i]);
+   					_cms.before(_p);
+				}
+				pscss(fontSize);
+				dcss(_fz)
+				return _a_txta_last;
+			}
+
+			// 修改之前行的内容
+			if($('textarea[nIndex]').attr('nRow') == _txta_l && $('textarea[nIndex]').attr('nIndex') != _val.lastIndexOf('\n')){
+				$('preview cms').find('p').remove();
+				for(var i = 0, l = _txta_l - 1; i < l; i++){
+					var _p = $('<p>').html(_a_txta[i]);
+                	_cms.before(_p);
+				}
+			}
+
+			// 正常换行时触发
+			if($('textarea[nIndex]').attr('nRow') != _txta_l && $('textarea[nIndex]').attr('nIndex') != _val.lastIndexOf('\n')){
+				if($('preview cms').find('p').length < _txta_l - 1){
+					var _p = $('<p>').html(_a_txta[_txta_l - 2]);
+                	_cms.before(_p);
+				}
+			}
+
+            $('textarea[nIndex]').attr({
+				'nIndex': _val.lastIndexOf('\n'),
+				'nRow': _txta_l
+			});
+			pscss(fontSize);
+            dcss(_fz);
+			cmsLineHeight();
+            
+            // 计算字间距
+            function cmsLetterSpacing(str, fz){
+	            var _strn = getByteLen(str.replace(/\n/g,'')),
+	            	_letterSpacing = 0, _marginLR = 0;
+	            if(str.length > 1){
+	            	_letterSpacing = parseInt((wid - _strn / 2 * fz) / (str.length + 1));
+	            	if(_letterSpacing > fz / 2){
+	            		_letterSpacing = parseInt(fz / 2);
+	            	}
+	            }
+	            _marginLR = parseInt((wid - _strn / 2 * fz - _letterSpacing * (str.length - 1)) / 2);
+	            return {
+	            	'marginLR': _marginLR,
+	            	'letterSpacing': _letterSpacing
+	            }
+            }
+            
+            // 计算行间距
+            function cmsLineHeight(){
+            	var _ps = $('preview cms').find('p'),
+            		_d = $('preview cms').find('div'),
+            		_cmsheight = parseInt($('preview cms').css('height')),
+            		_totalHeight = 0, _lineHeight = 0, _marginTB = 0;
+            	for(var i = 0, l = _ps.length; i < l; i++){
+            		_totalHeight += parseInt(_ps.eq(i).css('height'));
+            	}
+            	if(_d.length > 0){
+            		_totalHeight += parseInt(_d.eq(0).css('height'));
+            	}
+            	if(_txta_l > 1){
+            		_lineHeight = parseInt((_cmsheight - _totalHeight) / (_txta_l + 1));
+            	}
+            	_marginTB = parseInt((_cmsheight - _totalHeight - _lineHeight * (_txta_l - 1)) / 2);
+            	$('preview cms').find('p, div').css('margin-top', '');
+            	$('preview cms').find('*:first-child').css('margin-top', _marginTB + 'px');
+            	for(var i = 0, l = _ps.length; i < l; i++){
+            		var _p = _ps.eq(i);
+            		_p.css('margin-bottom', _marginTB + 'px');
+            		_p.attr({'positionY': _p.position().top});
+            	}
+            	_d.attr({'positionY': _d.position().top});
+            	$('preview cms').find('*:first-child').attr('positionY', _marginTB);
+            }
+
+            // 为预览框中的<div>添加样式
+            function dcss(fz){
+            	var _html = _a_txta_last;
+            	_textStyle = cmsLetterSpacing(_html, fz),
+            	_d = $('preview cms').find('div');
+            	_d.css({
+					height: fz + 'px',
+					lineHeight: fz + 'px',
+					fontSize: fz + 'px',
+					textIndent: _textStyle.letterSpacing + 'px',
+					letterSpacing: _textStyle.letterSpacing + 'px'
+				}).attr({
+					'positionX': _textStyle.marginLR,
+					'fz': fz
+				});
+            }
+
+            // 为预览框中所有的<p>添加样式
+            function pscss(fz){
+            	var _ps = $('preview cms').find('p');
+                for(var i = 0, l = _ps.length; i < l; i++){
+					var _html = _ps.eq(i).html(),
+						_dfz;
+					if(fz && fz != '' && fz != 'auto'){
+						_dfz = fz;
+					} else {
+						_dfz = getFontSize(wid, hei, _txta_l, _html);
+					}
+					var	_textStyle = cmsLetterSpacing(_html, _dfz),
+						_p = _ps.eq(i);
+					_p.css({
+						height: _dfz + 'px',
+						lineHeight: _dfz + 'px',
+						fontSize: _dfz + 'px',
+						textIndent: _textStyle.letterSpacing + 'px',
+						letterSpacing: _textStyle.letterSpacing + 'px'
+					}).attr({
+						'positionX': _textStyle.marginLR,
+						'fz': _dfz
+					});
+				}
+            }
+
+            // 计算字号
+            function getFontSize(wid, hei, n, str){
+                var _a_fz_i, _fontSize,
+                    _str_l = Math.ceil(getByteLen(str.replace(/\n/g,'')) / 2),
+                	_fontSize = fontSize(parseInt(wid / _str_l));
+                if(!_fontSize){
+                    return false;
+                }
+                if(_fontSize > hei / n){
+                    _fontSize = fontSize(parseInt(hei / n));
+                }
+                return _fontSize;
+
+                function fontSize(fz){
+                    var _a_fontSize = [16, 24, 32, 48, 64],
+                        i = 0, l = _a_fontSize.length;
+                    for(; i < l; i++){
+                        if(fz < _a_fontSize[i]){
+                            if(i === 0){
+                                return false;
+                            } else {
+                                fz = _a_fontSize[i - 1];
+                            }
+                            break;
+                        }
+                    }
+                    if(i === l){
+                        fz = _a_fontSize[l - 1];
+                    }
+                    return fz;
+                }
+            }
+	    	return _a_txta_last;
+	    };
+	})
+// 过滤器：文字信息特殊字符处理,由于jsp页面中使用了'ng-bind-html'，需要引入 $sce 使Angular相信 用于显示的内容 是安全的
+	.filter('textCheck', function ($sce) {
+	    return function (val) {
+		    if (!val){
+		    	return '';
+		    }
+	    	var _val = val.replace(/\</g,"&lt;").replace(/\>/g,"&gt;").replace(/\n/g,"<\/br>").replace(/ /g,"&nbsp;");
+		  	return $sce.trustAsHtml(_val);
+	    };
+	})
+})(angular);

@@ -1,0 +1,13 @@
+package com.boco.service;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.boco.dao.login.LoginDao;
+
+@Service("userService")
+public class UserService {
+	@Resource(name="loginDao")
+	private LoginDao loginDao;
+}

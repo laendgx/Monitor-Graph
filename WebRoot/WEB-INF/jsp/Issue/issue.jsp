@@ -1,0 +1,49 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<!DOCTYPE html>
+<html>
+<head>
+	<base href="<%=basePath%>">
+
+<%@include file="../public/publicCss.jsp" %>
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath }/static/Configuration/css/configuration.css">
+	<title>Configuration</title>
+
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">
+
+</head>
+
+<body ng-app='issueApp' ng-controller='issueController'>
+	<div issue></div>
+<%@include file="../public/publicJs.jsp" %>
+<script type="text/javascript">
+	var basepath = "${pageContext.request.contextPath}";
+	var chatServerAddress = "${collSocketIoAddr}";
+	var userId = "${sessionScope.admin.userId}";
+</script>
+<script type="text/javascript" 
+	src="${pageContext.request.contextPath }/static/CommonJS/jsmap.js"></script>
+<script type="text/javascript" 
+	src="${pageContext.request.contextPath}/static/CommonJS/socket.io/socket.io.js"></script>
+<script type="text/javascript" 
+	src="${pageContext.request.contextPath}/static/CommonJS/socket.io/moment.min.js"></script>
+<script type="text/javascript" 
+	src="${pageContext.request.contextPath }/static/Configuration/js/app.js?ver=${jsVersion}"></script>
+<script type="text/javascript" 
+	src="${pageContext.request.contextPath }/static/Configuration/js/controllers.js?ver=${jsVersion}"></script>
+<script type="text/javascript" 
+	src="${pageContext.request.contextPath }/static/Configuration/js/directives.js?ver=${jsVersion}"></script>
+<script type="text/javascript" 
+	src="${pageContext.request.contextPath }/static/Configuration/js/services.js?ver=${jsVersion}"></script>
+<script type="text/javascript" 
+	src="${pageContext.request.contextPath }/static/Configuration/js/filters.js?ver=${jsVersion}"></script>
+<script type="text/javascript" 
+	src="${pageContext.request.contextPath }/static/Configuration/js/configuration.js?ver=${jsVersion}"></script>
+</body>
+</html>

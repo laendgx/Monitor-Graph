@@ -1,0 +1,28 @@
+<%@ page pageEncoding="UTF-8"%>
+<cmscompile ng-show='compile' ng-hide='!compile'>
+	<header>
+		<span>情报板</span>
+		<i ng-click='compile=false'>×</i>
+	</header>
+	<cms-tpl info='cmsInfo' sflag='cmsTpl'></cms-tpl>
+	<edit-tpl ng-show='!cmsTpl' ng-hide='cmsTpl'></edit-tpl>
+	<info>
+		<ul>
+			<li>所处位置：{{cmsInfo.routeLineId}}{{cmsInfo.routeLineName}} {{cmsInfo.devicePegNo}}</li>
+			<li>运行状态：{{cmsInfo.status.alertText}}</li>
+			<li>发布时间：{{cmsInfo.deviceVar[cmsInfo.issuedTypeId].deviceSendTime}}</li>
+		</ul>
+		<btns>
+			<p ng-click='cmsTpl=!cmsTpl;inputPosition()'>添加</p>
+			<p ng-click='cmsTpl=!cmsTpl;inputPosition()'>修改</p>
+			<p>删除</p>
+		</btns>
+	</info>
+	<footer ng-show='!cmsTpl' ng-hide='cmsTpl'>
+		<btns>
+			<p>发布</p>
+			<p ng-click='cmsList=!cmsList'>追加情报板</p>
+			<p>使用模板</p>
+		</btns>
+	</footer>
+</cmscompile>

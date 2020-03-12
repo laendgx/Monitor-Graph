@@ -1,0 +1,14 @@
+package com.boco.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@RequestMapping("/alert")
+@Controller
+public class AlertController {
+	
+	@RequestMapping("/toIndex")
+	public String toIndex(){
+		return "Alert/Home";
+	}
+}

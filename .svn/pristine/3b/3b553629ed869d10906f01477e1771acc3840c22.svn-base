@@ -1,0 +1,34 @@
+<%@ page pageEncoding="UTF-8"%>
+<listwrap ng-show='((road.lines && road.roads)||(pollists.lines && pollists.roads))' ng-hide='!((road.lines && road.roads)||(pollists.lines && pollists.roads))'>
+<!--   -->
+	<header listheader>
+		<input type='checkbox' id='{{pollists.id}}'>
+		<label for='{{pollists.id}}'>{{pollists.id}}{{pollists.name}}</label>
+	</header>
+	<listarea listarea>
+		<browse ng-repeat='device in pollists.devices' devtpl ng-show='deviceshow({road: road.roads, position: road.position, direct: road.direct, types: road.types, droad: device.roads, dposition: device.position, ddirect: device.direct, dtypes: device.types})' ng-hide='!(deviceshow({road: road.roads, position: road.position, direct: road.direct, types: road.types, droad: device.roads, dposition: device.position, ddirect: device.direct, dtypes: device.types}))'>
+		    <header>
+		        <input type='checkbox' id='{{device.deviceId}}' ng-model='device.inp' ng-true-value=true ng-false-value=false ng-click='ich({dev: device.deviceId, org: device.orgId, val: device.inp})'>
+		        <label for='{{device.deviceId}}'>{{device.deviceName}}</label>
+		        <status ng-style='device.status | setstatuscolor'>{{device.status.alertText}}</status>
+		    </header>
+			<bpreview setstop stop='false'>
+		        <bcwrap ng-style='device.cmsSizeDesc | setbcstyle' eventstop>
+		            <bcms>
+		            	<pwrap ng-repeat='pols in device.deviceVar[device.issuedTypeId].deviceVarValue'>
+		            		<p ng-style='pol | setpstyle' ng-repeat='pol in pols.wordList'>{{pol.wordContent}}</p>
+		            	</pwrap>
+		            </bcms>
+		        </bcwrap>
+		    </bpreview>
+		    <cnav>
+		    	<p ng-repeat='index in device.deviceVar[device.issuedTypeId].deviceVarValue'>{{$index + 1}}</p>
+		    </cnav>
+		    <bottombar>
+		    	<span>详细</span>
+		    	<span>删除节目单</span>
+		    	<span>修改节目单</span>
+		    </bottombar>
+		</browse>
+	</listarea>
+</listwrap>

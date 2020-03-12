@@ -1,0 +1,139 @@
+(function(angular){
+
+	var controllers = angular.module('app.controllers', []);
+
+	controllers.controller('configController', ['$scope', '$filter', '$interval', function($scope, $filter, $interval){
+        $scope.moveNeagle = function(elem){
+            var cmap = elem.find('cmap'),
+                follow = elem.find('img'),
+                ewrap = elem.find('eagle'),
+                eagle = elem.find('eawindow'),
+                bgctrl = elem.find('bgctrl'),
+                borderwid = 320;
+            
+            var movePercent = setModStyle();
+
+            cmap.bind('mousedown', moveMousedown);
+            bgctrl.bind('mousedown', bgMousedown);
+
+            function setModStyle(){
+                cmap.css({width: follow.width(), height: follow.height()});
+                var percent = cmap.width() / cmap.height();
+                if(percent >= 4 / 3){
+                    ewrap.css({'width': borderwid, 'height': (borderwid / percent).toFixed(2)});
+                } else {
+                    ewrap.css({'width': (borderwid / 4 * 3 * percent).toFixed(2), 'height': borderwid / 4 * 3});
+                }
+                ewrap.css({'background-image': 'url(' + follow.attr('src') + ')', 'background-size': ewrap.width() + 'px ' + ewrap.height() + 'px'})
+
+                var epercent = ewrap.width() / cmap.width();
+                eagle.css({'width': ($(window).width() * epercent).toFixed(2), 'height': ($(window).height() * epercent).toFixed(2)});
+                return (cmap.width() / ewrap.width());
+            }
+
+            function moveMousedown(event){
+                var disX = event.clientX - cmap.position().left,
+                    disY = event.clientY - cmap.position().top,
+                    minX = $(window).width() - cmap.width(), maxX = 0,
+                    minY = $(window).height() - cmap.height(), maxY = 0;
+
+                $(document).bind({
+                    'mousemove': moveMousemove,
+                    'mouseup': moveMouseup
+                });
+
+                function moveMousemove(event){
+                    var l = event.clientX - disX;
+                    var t = event.clientY - disY;
+                    if(l > maxX){
+                        l = maxX;
+                    }
+                    if(l < minX){
+                        l = minX;
+                    }
+                    if(t > maxY){
+                        t = maxY;
+                    }
+                    if(t < minY){
+                        t = minY;
+                    }
+                    cmap.css({'left': l + 'px', 'top': t + 'px'});
+                    follow.css({'left': l + 'px', 'top': t + 'px'});
+                    eagle.css({'left': -l / movePercent - borderwid + 'px', 'top': -t / movePercent - borderwid + 'px'});
+                }
+
+                function moveMouseup(){
+                    $(document).unbind({
+                        'mousemove': moveMousemove,
+                        'mouseup': moveMouseup
+                    });
+                }
+            }
+
+            function bgMousedown(event){
+                var mdx = event.offsetX,
+                    mdy = event.offsetY,
+                    areax = eagle.position().left,
+                    areay = eagle.position().top,
+                    areawid = eagle.width(),
+                    areahei = eagle.height();
+                if(mdx <= areax + borderwid || mdx >= areax + borderwid + areawid || mdy <= areay + borderwid || mdy >= areay + borderwid + areahei){
+                    var eagle_n_top = mdy - areahei / 2,
+                        eagle_n_left = mdx - areawid / 2;
+                    if(eagle_n_top < 0){
+                        eagle_n_top = 0;
+                    }
+                    if(eagle_n_top > ewrap.height() - areahei){
+                        eagle_n_top = ewrap.height() - areahei;
+                    }
+                    if(eagle_n_left < 0){
+                        eagle_n_left = 0;
+                    }
+                    if(eagle_n_left > ewrap.width() - areawid){
+                        eagle_n_left = ewrap.width() - areawid;
+                    }
+                    eagle.css({'top': (-borderwid + eagle_n_top), 'left': (-borderwid + eagle_n_left)});
+                    cmap.css({'left': -eagle_n_left * movePercent + 'px', 'top': -eagle_n_top * movePercent + 'px'});
+                    follow.css({'left': -eagle_n_left * movePercent + 'px', 'top': -eagle_n_top * movePercent + 'px'});
+                }
+                mdx = event.offsetX - eagle.position().left,
+                mdy = event.offsetY - eagle.position().top;
+                maxX = ewrap.width() - parseFloat(eagle.css('width')) - borderwid, minX = 0 - borderwid,
+                maxY = ewrap.height() - parseFloat(eagle.css('height')) - borderwid, minY = 0 - borderwid;
+
+                bgctrl.bind({
+                    'mousemove': bgMousemove,
+                    'mouseup': bgMouseup
+                });
+
+                function bgMousemove(event){
+                    var mmx = event.offsetX - mdx;
+                    var mmy = event.offsetY - mdy;
+                    if(mmx > maxX){
+                        mmx = maxX;
+                    }
+                    if(mmx < minX){
+                        mmx = minX;
+                    }
+                    if(mmy > maxY){
+                        mmy = maxY;
+                    }
+                    if(mmy < minY){
+                        mmy = minY;
+                    }
+                    eagle.css({'left': mmx + 'px', 'top': mmy + 'px'});
+                    cmap.css({'left': -(mmx + borderwid) * movePercent + 'px', 'top': -(mmy + borderwid) * movePercent + 'px'});
+                    follow.css({'left': -(mmx + borderwid) * movePercent + 'px', 'top': -(mmy + borderwid) * movePercent + 'px'});
+                }
+
+                function bgMouseup(){
+                    bgctrl.unbind({
+                        'mousemove': bgMousemove,
+                        'mouseup': bgMouseup
+                    });
+                }
+            }
+        };
+	}])
+})(angular);
+

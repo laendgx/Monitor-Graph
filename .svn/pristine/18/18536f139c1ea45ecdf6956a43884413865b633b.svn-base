@@ -1,0 +1,19 @@
+<%@ page pageEncoding="UTF-8"%>
+<cmsedit ng-show='modelEdit' ng-hide='!modelEdit'>
+	<header>
+		<span>模板编辑</span>
+		<i>×</i>
+	</header>
+	<div class='guide'>
+		<input type='text' >
+	</div>
+	<div class='tplwrap'>
+		<edit-tpl header='{{editHeader}}' model='modelEdit[$index]' ng-repeat='a in aaa'></edit-tpl>
+	</div>
+	<footer>
+		<btns>
+			<p>发布</p>
+			<p>取消</p>
+		</btns>
+	</footer>
+</cmsedit>

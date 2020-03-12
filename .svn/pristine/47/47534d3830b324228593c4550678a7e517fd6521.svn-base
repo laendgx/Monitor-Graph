@@ -1,0 +1,34 @@
+<%@ page pageEncoding="UTF-8"%>
+<cmslist>
+	<header>
+		<span>情报板</span>
+		<i>×</i>
+	</header>
+	<div class='table'>
+		<table>
+			<thead>
+				<tr>
+					<th width='5%'></th>
+					<th width='9%'></th>
+					<th width='14%'></th>
+					<th width='24%'></th>
+					<th width='34%'></th>
+					<th width='14%'></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>1</td>
+					<td>2</td>
+					<td>3</td>
+					<td>4</td>
+					<td>5</td>
+					<td>6</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<footer>
+		<p>关闭</p>
+	</footer>
+</cmslist>

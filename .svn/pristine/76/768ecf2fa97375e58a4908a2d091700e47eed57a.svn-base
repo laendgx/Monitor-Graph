@@ -1,0 +1,15 @@
+<%@ page pageEncoding="UTF-8"%>
+<browse>
+	<bpreview>
+        <bcwrap>
+            <bcms>
+            	<pwrap >
+            		<p ng-repeat='pol in tellists' ng-style='pol.style'>{{pol.text}}</p>
+            	</pwrap>
+            </bcms>
+        </bcwrap>
+    </bpreview>
+    <cnav>
+    	<p ng-repeat='index in tellists'>{{$index + 1}}</p>
+    </cnav>
+</browse>

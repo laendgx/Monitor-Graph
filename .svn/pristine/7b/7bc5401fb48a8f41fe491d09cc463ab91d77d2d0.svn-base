@@ -1,0 +1,29 @@
+package com.boco.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/cms")
+public class CMSController {
+	
+	@RequestMapping("/edit")
+	public String edit(){
+		return "Cms/CmsEdit";
+	}
+	
+	@RequestMapping("/browse")
+	public String browse(){
+		return "Cms/CmsBrowse";
+	}
+	/* ↓↓↓↓ angular用模板 ↓↓↓↓ */
+	@RequestMapping("/tbrowse")
+	public String Tbrowse(){
+		return "Cms/template/browse";
+	}
+
+	@RequestMapping("/tedit")
+	public String Tedit(){
+		return "Cms/template/addEdit";
+	}
+}

@@ -1,0 +1,12 @@
+package com.boco.service;
+
+import org.springframework.stereotype.Service;
+/**
+ * 可变情报板服务类
+ * @author 孙冠义
+ *
+ */
+@Service("cmsService")
+public class CmsService {
+
+}

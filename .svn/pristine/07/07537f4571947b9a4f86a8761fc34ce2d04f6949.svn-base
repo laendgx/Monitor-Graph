@@ -1,0 +1,389 @@
+package com.boco.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.boco.domain.DeviceVarValueInfo;
+import com.boco.domain.JkptBaseOrgRoad;
+import com.boco.domain.JkptBaseRoad;
+import com.boco.domain.JkptBaseUser;
+import com.boco.domain.JkptCommParamDic;
+import com.boco.domain.JkptTxxtDeviceCms;
+import com.boco.domain.JkptTxxtFixedCommand;
+import com.boco.domain.cms.IssueLogQueryConBean;
+import com.boco.domain.cms.JkptTxxtIssueLog;
+import com.boco.domain.comm.CommResult;
+import com.boco.domain.forebean.CmsIconsBean;
+import com.boco.domain.forebean.SearchConditionBean;
+import com.boco.service.CmsService;
+import com.boco.service.CommonService;
+import com.boco.utils.ConfigReaderUtils;
+
+@Controller
+@RequestMapping("/cms")
+public class CMSController {
+	@Resource(name="commonService")
+	private CommonService commonService;
+	
+	@Resource(name="cmsService")
+	private CmsService cmsService;
+	
+	/**
+	 * 采集端socketio服务端地址
+	 */
+	private String collSocketIoAddr = ConfigReaderUtils.getCollSocketIoAddr();
+	/**
+	 * js版本号
+	 */
+	private String jsVersion = ConfigReaderUtils.getJsVersion();
+	
+	@RequestMapping("/edit")
+	public String edit(ModelMap model){
+		model.addAttribute("collSocketIoAddr", collSocketIoAddr);		
+		model.addAttribute("jsVersion", jsVersion);
+		return "Cms/CmsEdit";
+	}
+	
+	@RequestMapping("/browse")
+	public String browse(ModelMap model){
+		model.addAttribute("collSocketIoAddr", collSocketIoAddr);
+		model.addAttribute("jsVersion", jsVersion);
+		return "Cms/CmsBrowse";
+	}
+	
+	@RequestMapping("/socket")
+	public String socket(ModelMap model){
+		model.addAttribute("collSocketIoAddr", collSocketIoAddr);
+		model.addAttribute("jsVersion", jsVersion);
+		return "Websocket";
+	}
+	
+	@RequestMapping("/configuration")
+	public String Configuration(ModelMap model){
+		model.addAttribute("collSocketIoAddr", collSocketIoAddr);
+		model.addAttribute("jsVersion", jsVersion);
+		return "Configuration/configuration";
+	}
+	
+	@RequestMapping("/polling")
+	public String Polling(HttpServletRequest request, ModelMap model) throws Exception{	
+		model.addAttribute("collSocketIoAddr", collSocketIoAddr);
+		model.addAttribute("jsVersion", jsVersion);
+		return "Polling/polling";
+	}
+	
+	/**
+	 * 获取过滤条件信息
+	 * @return
+	 */
+	@RequestMapping(value="/getSearchCondition",method=RequestMethod.POST)
+	public @ResponseBody SearchConditionBean getSearchCondition(
+			HttpSession session) {
+		SearchConditionBean bean = new SearchConditionBean();
+
+		// 加入登录后，机构编号从session中的用户信息中获取
+		JkptBaseUser user = (JkptBaseUser) session.getAttribute("admin");		
+		int orgid = Integer.parseInt(user.getOrgId());
+		try {
+			// 路线信息
+			List<JkptBaseRoad> routeLinesList = commonService
+					.getRouteLinesInfoByOrgid(orgid, 0);
+			bean.setRouteLinesList(routeLinesList);
+			// 路段信息
+			List<JkptBaseOrgRoad> roadInfoList = commonService
+					.getRoadInfoByOrgid(orgid, 0);
+			bean.setRoadInfoList(roadInfoList);
+			// 位置
+			List<JkptCommParamDic> devicePositionList = commonService
+					.getDicByGroupType("DevicePosition", 0);
+			bean.setDevicePositionList(devicePositionList);
+			// 方向
+			List<JkptCommParamDic> deviceDirectList = commonService
+					.getDicByGroupType("DeviceDirect", 0);
+			bean.setDeviceDirectList(deviceDirectList);
+			// 情报板类型
+			List<JkptCommParamDic> cmsTypeList = commonService
+					.getDicByGroupType("CmsType", 0);
+			bean.setCmsTypeList(cmsTypeList);
+			// 情报板尺寸
+			List<JkptCommParamDic> cmsSizeList = commonService
+					.getDicByGroupType("CmsSize", 0);
+			bean.setCmsSizeList(cmsSizeList);
+			
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return bean;
+	}
+	
+	//获取情报板基础信息
+	@RequestMapping(value="getCmsBasicInfos", method=RequestMethod.POST)
+	public @ResponseBody List<JkptTxxtDeviceCms> getCmsBasicInfos(HttpSession session){
+		JkptBaseUser user = (JkptBaseUser) session.getAttribute("admin");		
+		Integer orgid = Integer.parseInt(user.getOrgId());
+		
+		List<JkptTxxtDeviceCms> list = null;
+		try {
+			list = cmsService.getCmsBasicInfos(orgid);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
+	//获取情报板的设备变量信息
+	@RequestMapping(value="/getCmsDeviceVarValueInfos",method=RequestMethod.POST)
+	public @ResponseBody List<DeviceVarValueInfo> getCmsDeviceVarValueInfos(){
+		List<DeviceVarValueInfo> list = null;
+		try{
+			list = cmsService.getCmsDeviceVarValueInfos();
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		return list;
+	}
+	
+	/**
+	 * 查询播放表
+	 * 输入参数：情报板类型；播放表类型
+	 * @param map
+	 * @return
+	 */
+	@RequestMapping(value="/getCmsFixedCommands", method=RequestMethod.POST)
+	public @ResponseBody List<JkptTxxtFixedCommand> getCmsFixedCommands(@RequestBody Map map){
+		try{
+			Integer index = (Integer) map.get("index");
+			String groupId = (String) map.get("groupId");
+			List<JkptTxxtFixedCommand> list = cmsService.getCmsFixedCommands(index, groupId);
+			return list;
+		}catch(Exception ex){
+			ex.printStackTrace();
+			return null;
+		}
+	}
+	
+	/**
+	 * 将播放表插入到数据库
+	 * @param command
+	 * @return
+	 */
+	@RequestMapping(value="/insertCmsFixedCommand",method=RequestMethod.POST)
+	public @ResponseBody CommResult insertCmsFixedCommand(@RequestBody JkptTxxtFixedCommand command){
+		CommResult result = new CommResult();
+		try{
+			cmsService.insertCmsFixedCommand(command);
+			result.setResultCode("100");
+		}catch(Exception ex){
+			ex.printStackTrace();
+			result.setResultCode("101");
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * 按照关键字查询发布日志
+	 * @param bean
+	 * @return
+	 */
+	@RequestMapping("/getIssueLogs")
+	public @ResponseBody List<JkptTxxtIssueLog> getIssueLogs(@RequestBody IssueLogQueryConBean bean){
+		List<JkptTxxtIssueLog> list = null;
+		try {
+			list = cmsService.getTxxtIssueLogs(bean);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
+	/**
+	 * 获取情报板的所有图标
+	 * @return
+	 */
+	@RequestMapping(value="/getCmsIcons", method=RequestMethod.POST)
+	public @ResponseBody CmsIconsBean getCmsIcons(HttpServletRequest request){
+		CmsIconsBean bean = cmsService.getCmsIcons(request);
+		return bean;
+	}
+	
+	/* ↓↓↓↓ angular用模板 ↓↓↓↓ */
+	@RequestMapping("/tbrowse")
+	public String Tbrowse(ModelMap model){
+		// model.addAttribute("collSocketIoAddr", collSocketIoAddr);
+		// model.addAttribute("jsVersion", jsVersion);
+		return "Cms/template/browse";
+	}
+
+	@RequestMapping("/tedit")
+	public String Tedit(ModelMap model){
+		// model.addAttribute("collSocketIoAddr", collSocketIoAddr);
+		// model.addAttribute("jsVersion", jsVersion);
+		return "Cms/template/addEdit";
+	}
+
+	@RequestMapping("/cmsTpl")
+	public String CmsTpl(ModelMap model){
+		// model.addAttribute("collSocketIoAddr", collSocketIoAddr);
+		// model.addAttribute("jsVersion", jsVersion);
+		return "Cms/template/cmsTpl";
+	}
+
+	@RequestMapping("/cmsEdit")
+	public String CmsEdit(ModelMap model){
+		// model.addAttribute("collSocketIoAddr", collSocketIoAddr);
+		// model.addAttribute("jsVersion", jsVersion);
+		return "Cms/template/cmsEdit";
+	}
+
+	@RequestMapping("/pollingFrame")
+	public String PollingFrame(ModelMap model){
+		// model.addAttribute("collSocketIoAddr", collSocketIoAddr);
+		// model.addAttribute("jsVersion", jsVersion);
+		return "Polling/template/pollingFrame";
+	}
+
+	@RequestMapping("/pollingAside")
+	public String PollingAside(ModelMap model){
+		// model.addAttribute("collSocketIoAddr", collSocketIoAddr);
+		// model.addAttribute("jsVersion", jsVersion);
+		return "Polling/template/pollingAside";
+	}
+
+	@RequestMapping("/polArea")
+	public String PolArea(ModelMap model){
+		// model.addAttribute("collSocketIoAddr", collSocketIoAddr);
+		// model.addAttribute("jsVersion", jsVersion);
+		return "Polling/template/polArea";
+	}
+
+	@RequestMapping("/eagle")
+	public String Eagle(ModelMap model){
+		// model.addAttribute("collSocketIoAddr", collSocketIoAddr);
+		// model.addAttribute("jsVersion", jsVersion);
+		return "Configuration/template/eagle";
+	}
+
+	@RequestMapping("/cmsCompile")
+	public String CmsCompile(ModelMap model){
+		// model.addAttribute("collSocketIoAddr", collSocketIoAddr);
+		// model.addAttribute("jsVersion", jsVersion);
+		return "Configuration/template/cmsCompile";
+	}
+
+	@RequestMapping("/cmsList")
+	public String CmsList(ModelMap model){
+		// model.addAttribute("collSocketIoAddr", collSocketIoAddr);
+		// model.addAttribute("jsVersion", jsVersion);
+		return "Configuration/template/cmsList";
+	}
+
+	@RequestMapping("/cfgCmsTpl")
+	public String CfgCmsTpl(ModelMap model){
+		// model.addAttribute("collSocketIoAddr", collSocketIoAddr);
+		// model.addAttribute("jsVersion", jsVersion);
+		return "Configuration/template/cmsTpl";
+	}
+
+	@RequestMapping("/multiTextarea")
+	public String MultiTextarea(ModelMap model){
+		// model.addAttribute("collSocketIoAddr", collSocketIoAddr);
+		// model.addAttribute("jsVersion", jsVersion);
+		return "Configuration/template/multiTextarea";
+	}
+
+	@RequestMapping("/cfgCmsEdit")
+	public String CfgCmsEdit(ModelMap model){
+		// model.addAttribute("collSocketIoAddr", collSocketIoAddr);
+		// model.addAttribute("jsVersion", jsVersion);
+		return "Configuration/template/cmsEdit";
+	}
+
+	@RequestMapping("/cmsEditTpl")
+	public String CmsEditTpl(ModelMap model){
+		// model.addAttribute("collSocketIoAddr", collSocketIoAddr);
+		// model.addAttribute("jsVersion", jsVersion);
+		return "Configuration/template/cmsEditTpl";
+	}
+
+	@RequestMapping("/cmsModel")
+	public String CmsModel(ModelMap model){
+		// model.addAttribute("collSocketIoAddr", collSocketIoAddr);
+		// model.addAttribute("jsVersion", jsVersion);
+		return "Configuration/template/cmsModel";
+	}
+
+	@RequestMapping("/poCompile")
+	public String PoCompile(ModelMap model){
+		// model.addAttribute("collSocketIoAddr", collSocketIoAddr);
+		// model.addAttribute("jsVersion", jsVersion);
+		return "Polling/template/cmsCompile";
+	}
+
+	@RequestMapping("/poEdit")
+	public String PoEdit(ModelMap model){
+		// model.addAttribute("collSocketIoAddr", collSocketIoAddr);
+		// model.addAttribute("jsVersion", jsVersion);
+		return "Polling/template/cmsEdit";
+	}
+
+	@RequestMapping("/poEditTpl")
+	public String poEditTpl(ModelMap model){
+		// model.addAttribute("collSocketIoAddr", collSocketIoAddr);
+		// model.addAttribute("jsVersion", jsVersion);
+		return "Polling/template/cmsEditTpl";
+	}
+
+	@RequestMapping("/poTpl")
+	public String poTpl(ModelMap model){
+		// model.addAttribute("collSocketIoAddr", collSocketIoAddr);
+		// model.addAttribute("jsVersion", jsVersion);
+		return "Polling/template/cmsTpl";
+	}
+
+	@RequestMapping("/poList")
+	public String PoList(ModelMap model){
+		// model.addAttribute("collSocketIoAddr", collSocketIoAddr);
+		// model.addAttribute("jsVersion", jsVersion);
+		return "Polling/template/cmsList";
+	}
+
+	@RequestMapping("/poModel")
+	public String PoModel(ModelMap model){
+		// model.addAttribute("collSocketIoAddr", collSocketIoAddr);
+		// model.addAttribute("jsVersion", jsVersion);
+		return "Polling/template/cmsModel";
+	}
+
+	@RequestMapping("/poManage")
+	public String PoManage(ModelMap model){
+		// model.addAttribute("collSocketIoAddr", collSocketIoAddr);
+		// model.addAttribute("jsVersion", jsVersion);
+		return "Polling/template/modelManage";
+	}
+
+	@RequestMapping("/poLastSend")
+	public String PoLastSend(ModelMap model){
+		// model.addAttribute("collSocketIoAddr", collSocketIoAddr);
+		// model.addAttribute("jsVersion", jsVersion);
+		return "Polling/template/lastSend";
+	}
+
+	@RequestMapping("/poModelEdit")
+	public String PoModelEdit(ModelMap model){
+		// model.addAttribute("collSocketIoAddr", collSocketIoAddr);
+		// model.addAttribute("jsVersion", jsVersion);
+		return "Polling/template/cmsEdit";
+	}
+}

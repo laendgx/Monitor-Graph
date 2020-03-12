@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="CommMapper">
+	<!-- 根据机构查询该机构管辖下的路段 -->
+	<select id="getRoadInfoByOrgid" parameterType="java.util.Map" resultType="JkptBaseOrgRoad">
+	select orgid, roadid, startstakeid, endstakeid, roadname, adminid, 
+	remark, writetime, companyid from jkpt_base_org_road 
+	where orgid = #{orgid, jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 根据机构查询该机构管辖下的路线 -->
+	<select id="getRouteLinesInfoByOrgid" parameterType="java.util.Map" resultType="JkptBaseRoad">
+	select * from jkpt_base_road a where a.routelineid in 
+	(select t.adminid from JKPT_BASE_ORG_ROAD t where t.orgid = #{orgid, jdbcType=VARCHAR} group by t.adminid)
+	</select>
+	
+	<!-- 根据分组类型获取字典信息 -->
+	<select id="getDicByGroupType" parameterType="java.util.Map" resultType="JkptCommParamDic">
+	select id, dicname, dicvalue, dicparentid, grouptype, memo, orderext, ext from jkpt_comm_paramdic
+	where grouptype = #{grouptype, jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 更新设备组态信息 -->
+	<update id="updateDeviceIntouchInfo" parameterType="JkptTxxtDevice">
+	update JKPT_TXXT_DEVICE
+	<set>
+		<if test="symbolStyle != null and symbolStyle != ''">
+		symbolstyle = #{symbolStyle, jdbcType=VARCHAR},
+		</if>
+		<if test="screenX != null">
+		screenx = #{screenX, jdbcType=NUMERIC},
+		</if>
+		<if test="screenY != null">
+		screeny = #{screenY, jdbcType=NUMERIC}
+		</if>
+	</set>
+	where orgid=#{orgId, jdbcType=NUMERIC} and deviceId = #{deviceId, jdbcType=NUMERIC}
+	</update>
+	
+	<!-- 获取当前机构 -->
+	<select id="getCurrentOrgid" resultType="java.lang.Integer">	
+	select t.orgid from Jkpt_Glxt_Currorganization t where rownum <![CDATA[<=]]> 1
+	</select>
+</mapper>

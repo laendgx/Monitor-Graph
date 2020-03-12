@@ -1,0 +1,36 @@
+﻿@charset 'utf-8';
+.wrap-scroll-bar {
+    height: 100%;
+    overflow: hidden;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    width: 10px;
+    background-color: rgba(255,255,255,0);
+    opacity: 0;
+}
+
+
+.scroll-bar {
+    background-color: #d5d5d5;
+    border-radius: 5px;
+    height: 0px;
+    position: absolute;
+    right: 1px;
+    top: 0px;
+    width: 7px;
+    z-index: 2;
+}
+
+.scroll-bar-back {
+    background-color: #a2a5ac;
+    position: absolute;
+    height: 100%;
+    width: 2px;
+    z-index: 1;
+    left: 4px;
+    opacity: 0;
+}
+.wrap-scroll-bar:hover {
+    opacity: 1;
+}

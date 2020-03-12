@@ -1,0 +1,58 @@
+(function(angular){
+
+	var controllers = angular.module('app.controllers', []);
+
+	controllers.controller('pollingController', ['$scope', '$http', '$log', function($scope, $http, $log){
+        $scope.getdataJson = {};
+        $scope.pandect = '';
+        $scope.cmsBasicInf = '';
+        $scope.pandectJson = {
+            lines: [],
+            roads: [],
+            position: [],
+            direct: [],
+            types: []
+        };
+        $scope.pandectThen = function(data){
+            $scope.pandect = data.data;
+            console.log($scope.pandect);
+        };
+        $scope.cbiThen = function(data){
+            $scope.cmsBasicInf = data.data;
+            console.log($scope.cmsBasicInf);
+        };
+        $scope.resetPandect = function(){
+            for(var i in $scope.pandectJson){
+                $scope.pandectJson[i] = [];
+            }
+        };
+
+
+
+
+
+
+
+        $scope.getdata = function(url, data, successFn, errorFn){
+            $http({
+                method: 'POST',
+                url: basepath + url + '?ran=' + Math.random(),
+                data: data,
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8'
+                }  
+            })
+            .then(function(resp){
+                successFn(resp);
+            }, function(resp){
+                errorFn(resp);
+            });
+        };
+
+        $(window).ready(function(){
+            $scope.getdata('/cms/getSearchCondition.from', JSON.stringify($scope.getdataJson), $scope.pandectThen);
+            $scope.getdata('/cms/getCmsBasicInfos.from', JSON.stringify($scope.getdataJson), $scope.cbiThen);
+        });
+	}])
+})(angular);
+

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+						http://www.springframework.org/schema/aop 
+						http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+						http://www.springframework.org/schema/context 
+						http://www.springframework.org/schema/context/spring-context-4.2.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+						http://www.springframework.org/schema/util 
+						http://www.springframework.org/schema/util/spring-util-4.2.xsd
+						http://www.springframework.org/schema/task
+       					http://www.springframework.org/schema/task/spring-task-4.2.xsd
+       					http://www.springframework.org/schema/cache
+						http://www.springframework.org/schema/cache/spring-cache-4.2.xsd
+	">
+		
+	<!-- 自动扫描controller包下的所有类，使其认为spring mvc的控制器 -->
+	<context:component-scan base-package="com.boco">
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>	
+	<!-- 启用注解 -->
+	<context:annotation-config />
+	
+	<!-- 缓存配置 -->  
+    <!-- 启用缓存注解功能(请将其配置在Spring主配置文件中) -->  
+    <cache:annotation-driven cache-manager="cacheManager" />
+    <!-- 缓存Ehcache 配置 -->
+    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">  
+        <property name="cacheManager" ref="ehCacheManager"></property>  
+    </bean>  
+    <bean id="ehCacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">  
+       <property name="configLocation" value="classpath:cacheconfig/ehcache.xml" />
+		<property name="shared" value="true" />
+		<property name="cacheManagerName" value="ehCacheManager"></property>
+    </bean>  
+	
+	<!-- <context:property-placeholder location="classpath:dbcpconfig.properties"/> -->
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:dbcpconfig.properties</value>
+			</list>
+		</property>
+	</bean>
+	<!-- 配置datasource，数据来自于context:property-placeholder -->
+	<bean id="myDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${driverClassName}" />
+		<property name="url" value="${url}" />
+		<property name="username" value="${username}" />
+		<property name="password" value="${password}" />
+		<property name="initialSize" value="${initialSize}" />
+		<property name="maxActive" value="${maxActive}" />
+		<property name="maxIdle" value="${maxIdle}" />
+		<property name="minIdle" value="${minIdle}" />
+		<property name="maxWait" value="${maxWait}" />
+		<property name="defaultAutoCommit" value="${defaultAutoCommit}" />
+	</bean>
+
+	<!-- 配置mybatis -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="myDataSource" />
+		<property name="configLocation" value="classpath:mybatis/mybatis-config.xml"></property>
+		<!-- mapper扫描 -->
+		<property name="mapperLocations" value="classpath:mybatis/*/*.xml"></property>
+	</bean>
+
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sqlSessionFactory" />
+	</bean>
+
+	<!-- 事务控制 -->
+	<bean id="txManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="myDataSource"></property>
+	</bean>
+	
+	<!-- 为了支持注解 -->
+	<tx:annotation-driven transaction-manager="txManager"
+		proxy-target-class="true" />
+    
+</beans>

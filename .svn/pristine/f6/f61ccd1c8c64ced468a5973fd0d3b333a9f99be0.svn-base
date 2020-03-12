@@ -1,0 +1,16 @@
+<%@ page pageEncoding="UTF-8"%>
+<div>
+	<button ng-click='editWindow=!editWindow'>Add</button>
+	<t-edit></t-edit>
+	<div ng-repeat='cmslist in cmsTextList' ng-click='showCms(cmslist.guid)'>{{cmslist.text}}</div>
+	<editwindow class='browsewindow'>
+		<preview>
+	        <cmswrap>
+	            <cms ng-style='cmsStyle'>
+	                <div>{{cmsText | ipreview:cmsWidth:cmsHeight:cmsFontFamily:cmsFontSize:cmsFontColor:cmsIcons}}</div>
+	            </cms>
+	        </cmswrap>
+	    </preview>
+    </editwindow>
+</div>  
+

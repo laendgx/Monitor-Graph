@@ -1,0 +1,110 @@
+package com.boco.service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.boco.dao.DaoSupport;
+import com.boco.domain.JkptBaseOrgRoad;
+import com.boco.domain.JkptBaseRoad;
+import com.boco.domain.JkptCommParamDic;
+/**
+ * 公用服务类
+ * @author 孙冠义
+ *
+ */
+@Service("commonService")
+public class CommonService {
+	@Resource(name="daoSupport")
+	private DaoSupport dao;
+	
+	/**
+	 * 将机构转换为7个字节的字符串
+	 * @param orgid
+	 * @return
+	 */
+	private String convertOrgid2String(Integer orgid){
+		String str = orgid + "";
+		while(str.length() < 7){
+			str = "0" + str;
+		}
+		return str;
+	}
+	
+	/**
+	 * 根据机构查询该机构管辖下的路段
+	 * @param orgid
+	 * @param flag flag =1时，增加全部
+	 * @return
+	 * @throws Exception
+	 */
+	public List<JkptBaseOrgRoad> getRoadInfoByOrgid(Integer orgid, int flag) throws Exception{
+		String str = this.convertOrgid2String(orgid);
+		Map<String,String> map = new HashMap<String,String>();
+		map.put("orgid", str);
+		List<JkptBaseOrgRoad> list = (List<JkptBaseOrgRoad>) dao.findForList("CommMapper.getRoadInfoByOrgid", map);
+		if (list != null && flag == 1){
+			JkptBaseOrgRoad road = new JkptBaseOrgRoad();
+			road.setRoadname("全部");
+			list.add(0, road);
+		}
+		
+		return list;
+	}
+	
+	/**
+	 * 通过机构编号获取该机构下的路线信息
+	 * @param orgid
+	 * @param flag flag＝1时，增加全部
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<JkptBaseRoad> getRouteLinesInfoByOrgid(Integer orgid, int flag) throws Exception{
+		String str = this.convertOrgid2String(orgid);
+		Map<String,String> map = new HashMap<String,String>();
+		map.put("orgid", str);
+		
+		List<JkptBaseRoad> list = (List<JkptBaseRoad>) dao.findForList("CommMapper.getRouteLinesInfoByOrgid", map);
+		if (list != null && flag == 1){
+			JkptBaseRoad road = new JkptBaseRoad();
+			road.setRoadName("全部");
+			list.add(0, road);
+		}
+		return list;
+	}
+	
+	/**
+	 * 根据分组类型获取字典信息
+	 * @param grouptype
+	 * @param flag flag＝1，添加全部
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<JkptCommParamDic> getDicByGroupType(String grouptype, int flag) throws Exception{
+		Map<String,String> map = new HashMap<String,String>();
+		map.put("grouptype", grouptype);
+		
+		List<JkptCommParamDic> list = (List<JkptCommParamDic>) dao.findForList("CommMapper.getDicByGroupType", map);
+		
+		if (list != null && flag == 1){
+			JkptCommParamDic dic = new JkptCommParamDic();
+			dic.setDicName("全部");
+			list.add(0, dic);
+		}
+		return list;
+	}
+	
+	/**
+	 * 获取当前机构
+	 * @return
+	 * @throws Exception
+	 */
+	public Integer getCurrentOrgid() throws Exception{
+		Integer orgid = (Integer)dao.findForObject("CommMapper.getCurrentOrgid", null);
+		return orgid;
+	}
+}

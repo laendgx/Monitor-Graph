@@ -1,0 +1,10 @@
+<%@ page pageEncoding="UTF-8"%>
+<listwrap>
+	<header>
+		<input type='checkbox' id='{{pollists.deviceId}}'>
+		<label for='{{pollists.deviceId}}'>{{pollists.deviceName}}</label>
+	</header>
+	<listarea>
+		<!-- <pol-tel ng-repeat='' tellists=''></pol-tel> -->
+	</listarea>
+</listwrap>

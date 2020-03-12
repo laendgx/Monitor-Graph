@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="UserMapper">
+	<!-- 返回当前登录用户的权限菜单及对应的菜单链接信息 -->
+	<select id="getFuncTree" parameterType="java.lang.String"
+		resultType="BaseFuncTree">
+		select d.id, d.title, d.url, d.parentid, d.ordering, d.memo, d.funid
+		from jkpt_sys_userrole a, jkpt_sys_roleright b, jkpt_sys_right
+		c,jkpt_base_memutree d,jkpt_sys_role e
+		where a.userid = #{userId}
+		and a.roleid = b.roleid
+		and b.rightid=c.id
+		and c.id = d.funid
+		and a.roleid=e.id
+		order by d.parentid, d.ordering
+	</select>
+</mapper>

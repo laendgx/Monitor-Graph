@@ -1,0 +1,71 @@
+(function(angular) {
+
+	var directives = angular.module('app.directives', []);
+
+	directives
+	.directive('configuration', ['$timeout', function($timeout){
+		return {
+			restrict: 'EA', 
+			templateUrl: basepath + '/cms/eagle.from',
+			replace: true,
+			link: function(scope, element, attrs){
+				$timeout(function(){
+					scope.moveNeagle(element);
+				}, 100);
+			}
+		};
+	}])
+
+	.directive('compile', ['$timeout', function($timeout){
+		return {
+			restrict: 'EA', 
+			templateUrl: basepath + '/cms/cmsCompile.from',
+			replace: true,
+			link: function(scope, element, attrs){
+				$timeout(function(){
+					// scope.moveNeagle(element);
+				}, 100);
+			}
+		};
+	}])
+
+	.directive('list', ['$timeout', function($timeout){
+		return {
+			restrict: 'EA', 
+			templateUrl: basepath + '/cms/cmsList.from',
+			replace: true,
+			link: function(scope, element, attrs){
+				$timeout(function(){
+					// scope.moveNeagle(element);
+				}, 100);
+			}
+		};
+	}])
+
+	.directive('cmsTpl', ['$timeout', function($timeout){
+		return {
+			restrict: 'EA', 
+			templateUrl: basepath + '/cms/cfgCmsTpl.from',
+			replace: true,
+			link: function(scope, element, attrs){
+				$timeout(function(){
+					// scope.moveNeagle(element);
+				}, 100);
+			}
+		};
+	}])
+
+	.directive('multiTxta', ['$timeout', function($timeout){
+		return {
+			restrict: 'EA', 
+			templateUrl: basepath + '/cms/multiTextarea.from',
+			replace: true,
+			link: function(scope, element, attrs){
+				$timeout(function(){
+					// scope.moveNeagle(element);
+				}, 100);
+			}
+		};
+	}])
+
+})(angular);

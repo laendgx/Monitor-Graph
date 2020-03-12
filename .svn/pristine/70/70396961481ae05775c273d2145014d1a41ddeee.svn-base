@@ -1,0 +1,186 @@
+﻿@charset "utf-8";
+/* CSS Document */
+/*
+模块名称：login
+模块描述：
+*/
+
+/* public */
+.clear {
+    zoom: 1;
+}
+
+    .clear:after {
+        content: '';
+        display: block;
+        clear: both;
+    }
+
+/* reset */
+* {
+    padding: 0;
+    margin: 0;
+}
+
+ul, li, ol {
+    list-style: none;
+}
+
+header, .black_bar, footer {
+    width: 0 !important;
+    height: 0 !important;
+}
+
+body {
+	font-size: 14px;
+	font-family: "Microsoft YaHei";
+	overflow: hidden;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+#body {
+    width: 100% !important;
+    height: 105% !important;
+}
+
+#body {
+    background: url(../images/login1920.jpg) no-repeat;
+    background-size: 100% 100%;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+    border: none;
+}
+
+.login_btns {
+    position: absolute;
+    z-index: 1002;
+    top: 50%;
+    left: 50%;
+    margin-left: -548px;
+    margin-top: -312px;
+    height: 624px;
+    width: 1116px;
+    background: center url(../images/zhuyebeijing3.png) no-repeat;
+    text-align: center;
+}
+
+.duihuakuang {
+    position: absolute;
+    top: 190px;
+    right: 4px;
+    width: 450px;
+    height: 285px;
+}
+
+
+.login_username {
+    position: absolute;
+    top: -6px;
+    left: 66px;
+    width: 280px;
+    height: 30px;
+    text-align: center;
+}
+
+.login_password {
+    position: absolute;
+    top: 69px;
+    left: 66px;
+    width: 280px;
+    height: 30px;
+}
+
+.login_remember {
+    position: absolute;
+    left: 40px;
+    width: 280px;
+    top: 155px;
+    margin: -13px 0 0 !important;
+    height: 30px;
+    line-height: 30px;
+    text-align: left;
+    color: #bfd8e8;
+}
+
+.login_tips {
+    position: absolute;
+    top: 165px;
+    left: 22px;
+    color: red;
+    text-shadow: 1px -1px 3px #fff, 1px 1px 3px #fff, -1px -1px 3px #fff, -1px 1px 3px #fff;
+    font-weight: bold;
+}
+
+
+.login_username input {
+    BACKGROUND-COLOR: transparent;
+}
+
+.login_password input {
+    BACKGROUND-COLOR: transparent;
+}
+
+.login_btns .duihuakuang > div {
+    margin: 18px auto;
+}
+
+.login_btns .duihuakuang input {
+    border: none;
+    float: left;
+    font-size: 18px;
+    width: 100%;
+    color: #bfd8e8;
+    margin: 0;
+    padding: 0;
+    outline: none;
+}
+
+    .login_btns .duihuakuang input[type='checkbox'] {
+        width: 30px;
+        position: absolute;
+        left: -26px;
+        top: 8px;
+    }
+
+
+/*- 用于修改提示语placeholder样式 -*/
+::-webkit-input-placeholder { /* WebKit browsers */
+    color: #bfd8e8;
+}
+
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color: #bfd8e8;
+}
+
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color: #bfd8e8;
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10+ */
+    color: #bfd8e8;
+}
+
+.login_btn_wrap {
+    position: absolute;
+    width: 348px;
+    height: 48px;
+    background: #2d6dc1;
+    border-radius: 1px;
+    text-align: center;
+    line-height: 48px;
+    font-size: 18px;
+    color: #fff;
+    letter-spacing: 4px;
+    cursor: pointer;
+    bottom: 2px;
+    transition: all 150ms ease-in;
+}
+
+    .login_btn_wrap:hover {
+        box-shadow: 3px 3px 6px rgba(102,102,102,0.9);
+        bottom: 2px;
+        transition: all 150ms ease-out;
+    }

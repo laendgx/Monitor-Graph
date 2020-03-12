@@ -1,0 +1,41 @@
+<%@ page pageEncoding="UTF-8"%>
+<polling>
+	<header>
+		<span ng-click='aaa()'>情报板巡检</span>
+	</header>
+	<pol-aside aside='pandect' pandect='pandectJson' resetscroll='resetScroll(time)' resetfilt='resetPandect()'></pol-aside>
+	<pollist pollist>
+		<header>
+			<pandect>
+				<p>总数：<span>{{cmsCount}}</span>个</p>
+				<p>选中：<span>{{cmsChecked.length}}</span>个</p>
+			</pandect>
+			<checkall>
+				<input type='checkbox' id='checkall'>
+				<label for='checkall'>全选</label>
+			</checkall>
+			<polsearch>
+				<input type="text">
+				<i></i>
+			</polsearch>
+			<polbtns>
+				<div class='green'>删除节目单</div>
+				<div class='blue'>插播节目单</div>
+				<div class='green'>标准显示</div>
+			</polbtns>
+			<morebtns>
+				<i></i>
+			</morebtns>
+		</header>
+		<cmslist customAttr='scroll' cmslist>
+			<cmsscroll custombody='normal'>
+				<last-send></last-send>
+				<list-area ng-repeat='cbi in cmsBasicInf'></list-area>
+			</cmsscroll>
+		</cmslist>
+	</pollist>
+	<po-compile></po-compile>
+	<po-list></po-list>
+	<po-model></po-model>
+	<po-manage></po-manage>
+</polling>

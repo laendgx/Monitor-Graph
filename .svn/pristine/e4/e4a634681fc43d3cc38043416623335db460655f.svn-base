@@ -1,0 +1,297 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <base href="<%=basePath%>">
+    
+    <title>My JSP 'Wosocket.jsp' starting page</title>
+    
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+	<script type="text/javascript" src="${pageContext.request.contextPath }/static/CommonJS/jquery/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/static/CommonJS/socket.io/socket.io.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/static/CommonJS/socket.io/moment.min.js"></script>
+	<style type="text/css">
+		#console {
+			height: 400px;
+			overflow: auto;
+		}
+		.username-msg {color:orange;}
+		.connect-msg {color:green;}
+		.disconnect-msg {color:red;}
+		.send-msg {color:#888}
+	</style>
+	<script type="text/javascript">
+		//增加数据扩展函数contains
+		Array.prototype.contains = function ( needle ) {
+		  for (i in this) {
+		    if (this[i] == needle) return true;
+		  }
+		  return false;
+		}
+
+		var cmsDeviceVarMap = {};
+		var cmsAlertInfoMap = {};
+		//可变情报板发布状态数组
+		var cmsSendFlagArray = [];
+		//告警恢复或故障恢复的id
+		var resumeAlertIds = [100000,100001];
+		var socket; 
+		var basePath = "${pageContext.request.contextPath}"
+		
+		$(function(){
+			//读取设备变量信息
+			getDeviceVarValueInfos();
+			
+			socket = io.connect("http://10.11.1.33:9092") //127.0.0.1:9092
+			
+			socket.on("connect", function(){
+				output('<span class="connect-msg">Client has connected to the server!</span>');
+			});
+			
+			socket.on("disconnect", function(){
+				output('<span class="disconnect-msg">The client has disconnected!</span>');
+			});
+			
+			//数据
+			socket.on("uploaddataEvent", function(data){
+				output('<span class="username-msg">'  + ':</span> ' + data);
+				updateDeviceVarValue(data);
+			});
+			
+			//告警
+			socket.on("alertinfoEvent", function(data){
+				output('<span class="username-msg">'  + ':</span> ' + data);	
+				updateAlertInfoMap(data);
+			});
+				
+			//发送标志
+			socket.on("sendflagEvent", function(data){
+				output('<span class="sendflagEvent-msg">'  + ':</span> ' + data);
+				recvCmsSendFlag(data);
+			});
+		});
+		
+		
+		//控制亮度
+		function issuedCmsBright(){
+			var msgcontentArr = [];
+			var msgcontentjson = {};
+			msgcontentjson.collnode = 1;
+			msgcontentjson.orgid = 20300;
+			msgcontentjson.deviceid = 22210009;
+			msgcontentjson.devicevarid = 100012;
+			msgcontentjson.devicetypeid = 222112;
+			msgcontentjson.sendcontents = "30";
+			msgcontentArr.push(msgcontentjson);
+			
+			var msgjson = {};
+			msgjson.msgtype = "devicectl";
+			msgjson.msgcontent = JSON.stringify(msgcontentArr);
+			var str = JSON.stringify(msgjson);
+			socket.emit("controlevent",str);
+		}
+		
+		function sendclick(){
+			IssuedCmsPlayList();			
+		}
+		
+		//下发播放列表
+		function IssuedCmsPlayList(){
+			var msgcontent = "[{\"displayWidth\":320,\"displayHeight\":32,\"dispScrType\":1,\"timeDelay\":12,\"transition\":3,\"param\":23,\"wordList\":[{\"wordXXX\":16,\"wordYYY\":0,\"fontColor\":\"FFFF00\",\"fontBackColor\":\"00FF00\",\"fontShadowColor\":\"000000\",\"wordSpace\":0,\"fontSize_HH\":32,\"fontSize_WW\":32,\"wordContent\":\"千忙万忙出事故最忙\"}]},{\"displayWidth\":320,\"displayHeight\":32,\"dispScrType\":1,\"timeDelay\":12,\"transition\":3,\"param\":23,\"wordList\":[{\"wordXXX\":8,\"wordYYY\":4,\"fontColor\":\"FFFF00\",\"fontBackColor\":\"00FF00\",\"fontShadowColor\":\"000000\",\"wordSpace\":4,\"fontSize_HH\":24,\"fontSize_WW\":24,\"wordContent\":\"交通的安全来自文明出行\"}]}]";
+			
+			var msgcontentArr = [];
+			var msgcontentjson = {};
+			msgcontentjson.collnode = 1;
+			msgcontentjson.orgid = 20300;
+			msgcontentjson.deviceid = 22210001;
+			msgcontentjson.devicevarid = 100129;
+			msgcontentjson.devicetypeid = 222101;
+			msgcontentjson.sendcontents = msgcontent;
+			msgcontentArr.push(msgcontentjson);
+			
+			var msgjson = {};
+			msgjson.msgtype = "devicectl";
+			msgjson.msgcontent = JSON.stringify(msgcontentArr);
+			
+			var msgcontent1 = "[{\"displayWidth\":320,\"displayHeight\":32,\"dispScrType\":1,\"timeDelay\":12,\"transition\":3,\"param\":23,\"wordList\":[{\"wordXXX\":16,\"wordYYY\":0,\"fontColor\":\"FFFF00\",\"fontBackColor\":\"00FF00\",\"fontShadowColor\":\"000000\",\"wordSpace\":0,\"fontSize_HH\":32,\"fontSize_WW\":32,\"wordContent\":\"千忙万忙出事故最忙\"}]},{\"displayWidth\":320,\"displayHeight\":32,\"dispScrType\":1,\"timeDelay\":12,\"transition\":3,\"param\":23,\"wordList\":[{\"wordXXX\":8,\"wordYYY\":4,\"fontColor\":\"FFFF00\",\"fontBackColor\":\"00FF00\",\"fontShadowColor\":\"000000\",\"wordSpace\":4,\"fontSize_HH\":24,\"fontSize_WW\":24,\"wordContent\":\"交通的安全来自文明出行\"}]}]";
+			var msgcontentArr1 = [];
+			var msgcontentjson1 = {};
+			msgcontentjson1.collnode = 1;
+			msgcontentjson1.orgid = 20300;
+			msgcontentjson1.deviceid = 22210009;
+			msgcontentjson1.devicevarid = 100001;
+			msgcontentjson1.devicetypeid = 222101;
+			msgcontentjson1.sendcontents = msgcontent;
+			msgcontentArr1.push(msgcontentjson1);
+			
+			var msgjson1 = {};
+			msgjson1.msgtype = "devicectl";
+			msgjson1.msgcontent = JSON.stringify(msgcontentArr1);
+			
+			
+			var msgarr =[];
+			msgarr.push(msgjson);
+			msgarr.push(msgjson1);
+			var str = JSON.stringify(msgarr);
+			socket.emit("controlevent",str);
+		}
+			
+		
+		function output(message) {
+            var currentTime = "<span class='time'>" +  moment().format('HH:mm:ss.SSS') + "</span>";
+            var element = $("<div>" + currentTime + " " + message + "</div>");
+			$('#console').prepend(element);
+		}
+		
+		
+		//获取设备的采集变量信息
+		function getDeviceVarValueInfos(){
+			var url = basePath + "/cms/getCmsDeviceVarValueInfos.from?ran=" + Math.random();
+			var json = {};
+			$.ajax( {
+				type : "POST",
+				contentType : "application/json; charset=utf-8",//"application/x-www-form-urlencoded; charset=utf-8",
+				url : url,
+				dataType : "json",
+				async: false,
+				data : JSON.stringify(json),
+				success : function(data) {
+					createCmsDeviceVarMap(data);					
+				}
+			});
+		}
+		
+		//生成设备变量Map
+		function createCmsDeviceVarMap(data){
+			cmsDeviceVarMap = {};
+			for(var obj in data){
+				var key = data[obj].orgId + "" + data[obj].deviceId + "" + data[obj].deviceVarId;
+ 				cmsDeviceVarMap[key] = data[obj];
+			}
+		} 
+		
+		//更新设备变量的数据
+		function updateDeviceVarValue(data){
+			var obj = eval('(' + data + ')');
+            if (obj.msgtype == "uploaddata"){            	
+                if (obj.datalist != null){
+                    for(var i = 0; i < obj.datalist.length; i++){
+                        var varvalue = obj.datalist[i];
+                        var key = varvalue.orgid + "" + varvalue.deviceid + "" +  varvalue.deivcevarid;
+                        if (cmsDeviceVarMap.hasOwnProperty(key)){
+                        	var value = cmsDeviceVarMap[key];
+                        	value.varValue = varvalue.devicevarvalue;
+                        	value.varValueDesc = varvalue.deviceVarValueDesc;
+                        }                      
+                    }
+                }            	
+            }
+		}
+		
+		//更新告警信息
+		function updateAlertInfoMap(data){
+			var obj = eval('(' + data + ')');
+            if (obj.msgtype == "alertinfo"){      
+            	if (obj.alertlist != null){
+            		for(var i = 0; i < obj.alertlist.length; i++){
+            			var alertvalue = obj.alertlist[i];
+                        var key = alertvalue.orgid + "" + alertvalue.deviceid + "" +  alertvalue.devicevartype;
+                        var alertid = alertvalue.alertid;
+                        if (resumeAlertIds.contains(alertid)){
+                        	if (cmsAlertInfoMap.hasOwnProperty(key)){
+                        		delete cmsAlertInfoMap[key];
+                        	}
+                        } else {
+                        	if (cmsAlertInfoMap.hasOwnProperty(key)){
+                        		var oldalert = cmsAlertInfoMap[key];
+                        		oldalert.alertid = alertvalue.alertid;
+                        		oldalert.alertdatetime = alertvalue.alertdatetime;
+                        		oldalert.devvarvalue = alertvalue.devvarvalue;
+                        	} else {
+                        		cmsAlertInfoMap[key] = alertvalue;
+                        	}                        	
+                        }                              
+            		}
+            	}
+            }
+		}
+		
+		//接收设备的发布状态
+		function recvCmsSendFlag(data){
+			var obj = eval('(' + data + ')');
+            if (obj.msgtype == "sendflag"){ 
+            	var sendflaglist = obj.sendflaglist;
+            	if (sendflaglist != null){
+            		for(var i=0; i < sendflaglist.length; i++){
+            			cmsSendFlagArray.push(sendflaglist[i]);
+            		}
+            	}
+            }
+		}
+		
+		//获取情报板的固定播放表
+		function getCmsFixedCommands(){
+			var url = basePath + "/cms/getCmsFixedCommands.from?ran=" + Math.random();
+			var json = {};
+			json.commandType = "2221";
+			json.groupId = "1";
+			$.ajax( {
+				type : "POST",
+				contentType : "application/json; charset=utf-8",//"application/x-www-form-urlencoded; charset=utf-8",
+				url : url,
+				dataType : "json",
+				async: false,
+				data : JSON.stringify(json),
+				success : function(data) {
+					console.log(data);					
+				}
+			});
+		}
+		
+		//插入情报板的固定播放表
+		function insertCmsFixedCommand(){
+			var url = basePath + "/cms/insertCmsFixedCommand.from?ran=" + Math.random();
+			var json = {};
+			json.commandId = 0;
+			json.commandName = "千忙万忙出事故最忙";
+			json.commandType = 2221;
+			json.groupId =  "1";
+			json.groupName = "";
+			json.fixValue = 0;
+			json.command = "{\"displayWidth\":320,\"displayHeight\":32,\"dispScrType\":1,\"timeDelay\":12,\"transition\":3,\"param\":23,\"wordList\":[{\"wordXXX\":16,\"wordYYY\":0,\"fontColor\":\"FFFF00\",\"fontBackColor\":\"00FF00\",\"fontShadowColor\":\"000000\",\"wordSpace\":0,\"fontSize_HH\":32,\"fontSize_WW\":32,\"wordContent\":\"千忙万忙出事故最忙\"}]}";
+			$.ajax( {
+				type : "POST",
+				contentType : "application/json; charset=utf-8",//"application/x-www-form-urlencoded; charset=utf-8",
+				url : url,
+				dataType : "json",
+				async: false,
+				data : JSON.stringify(json),
+				success : function(data) {
+					console.log(data);					
+				}
+			});
+		}
+		
+	</script>
+  </head>
+  
+  <body>
+  	<button onclick="sendclick();">发送消息</button>
+  	<br/>
+  	<button onclick="getCmsFixedCommands()">查询播放表</button>
+  	<br/>
+  	<button onclick="insertCmsFixedCommand()">插入播放表</button>
+    This is my JSP page. <br>
+    <div id="console" class="well">
+	</div>
+  </body>
+</html>

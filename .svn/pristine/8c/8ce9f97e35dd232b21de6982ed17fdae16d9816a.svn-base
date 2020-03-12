@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AlertMapper">
+	<!-- 查询所有的告警字典信息 -->
+	<select id="getAllAlertDictionary" resultType="JkptBaseOrgRoad">
+		select a.alertid,
+		       a.alertdesc,
+		       a.alerttypeid,
+		       a.alertlevel,
+		       b.alerttypedesc,
+		       decode(a.alertlevel, 0, '0级', 1, '1级', 2, '2级', 3, '3级', '4级') alertleveldesc
+		from jkpt_txxt_alertdictionary a
+		left join jkpt_txxt_alerttype b
+		on a.alerttypeid = b.alerttypeid
+	</select>	
+</mapper>

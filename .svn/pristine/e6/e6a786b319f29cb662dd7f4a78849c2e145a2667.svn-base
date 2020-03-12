@@ -1,0 +1,67 @@
+<%@ page pageEncoding="UTF-8"%>
+<div class='tplwrap'>
+	<edittpl>
+		<header ng-show='editHeader' ng-hide='!editHeader'>
+			<p>目标情报板：F型情报板</p>
+			<p>已选数量：<span>55</span>块</p>
+			<div>查看明细</div>
+		</header>
+		<browse>
+			<preview>
+		        <cwrap ng-style='cmsInfo.cmsSizeDesc | cmsStyle:textalign:family:color' enterposi=-1 enterrow=1>
+	        		<div id='{{viewid}}'>{{editModel | modelview:viewid:cmsInfo.cmsSizeDesc:size:type:time}}</div>
+		        </cwrap>
+		    </preview>
+		</browse>
+	</edittpl>
+	<multitxta>
+	    <btns inputs>
+	        <select ng-model='family' class='type3'>
+	        	<option value=''>-字体-</option>
+		        <option value='SimHei' ng-selected='SimHei'>黑体</option>
+	        	<option value='SimSun'>宋体</option>
+		        <option value='KaiTi'>楷体</option>
+	        </select>
+	        <select ng-model='size' class='type2'>
+	        	<option value='' ng-selected='selected'>-字号-</option>
+	        	<option value='16'>16</option>
+	        	<option value='24'>24</option>
+	        	<option value='32'>32</option>
+	        	<option value='48'>48</option>
+	        	<option value='64'>64</option>
+	        </select>
+	        <input type='button'>
+	        <i class='increase'></i>
+	        <input type='button'>
+	        <i class='reduce'></i>
+	        <input type='radio' name='textalign' ng-click='textalign="left"'>
+	        <i class='textleft'></i>
+	        <input type='radio' name='textalign' ng-click='textalign="center"'>
+	        <i class='textcenter'></i>
+	        <input type='radio' name='textalign' ng-click='textalign="right"'>
+	        <i class='textright'></i>
+	        <i class='textcolor' ng-style='color | iColor' ng-click='colors=!colors'>
+		        <colors ng-show='colors' ng-hide='!colors'>
+		        	<i class='yellow' ng-click='color="#FFFF00";stopProp($event);colors=false'></i>
+		        	<i class='red' ng-click='color="#FF0000";stopProp($event);colors=false'></i>
+		        	<i class='blue' ng-click='color="#00FF00";stopProp($event);colors=false'></i>
+		        </colors>
+		    </i>
+	        <select ng-model='type' class='type1'>
+	        	<option value=''>-出字方式-</option>
+	        	<option value='0' ng-selected='0'>立即显示</option>
+	        	<option value='2'>从右到左</option>
+	        	<option value='3'>自下而上</option>
+	        </select>
+	        <select ng-model='time' class='type2'>
+	        	<option value=''>-停留时间-</option>
+	        	<option value='3' ng-selected='selected'>3"</option>
+	        	<option value='4'>4"</option>
+	        	<option value='5'>5"</option>
+	        </select>
+	        <i class='icon'></i>
+	        <icons></icons>
+	    </btns>
+	    <textarea ng-model='editModel' cmstextarea enterposi enterrow></textarea>
+	</multitxta>
+</div>

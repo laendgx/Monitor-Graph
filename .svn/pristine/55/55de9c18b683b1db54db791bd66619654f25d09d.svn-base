@@ -1,0 +1,401 @@
+(function(angular){
+
+	var controllers = angular.module('app.controllers', []);
+
+	controllers.controller('pollingController', ['$scope', '$http', '$interval', '$timeout', 'socket', function($scope, $http, $interval, $timeout, socket){
+
+        /* socket.io */
+        socket.on("connect", function(){
+            console.log('<span class="connect-msg">Client has connected to the server!</span>');
+        });
+        
+        socket.on("disconnect", function(){
+            console.log('<span class="disconnect-msg">The client has disconnected!</span>');
+        });
+        
+        //数据
+        socket.on("uploaddataEvent", function(data){
+            var boo = $scope.uploadData(data);
+            console.log(boo);
+            if(!boo){
+                var timer = $interval(function(){
+                    if($scope.io){
+                        $scope.uploadData(data);
+                        $interval.cancel(timer);
+                    }
+                }, 100);
+            }
+        });
+        
+        //告警
+        socket.on("alertinfoEvent", function(data){
+            var boo = $scope.uploadStatus(data);
+            if(!boo){
+                var timer = $interval(function(){
+                    if($scope.io){
+                        $scope.uploadStatus(data);
+                        $interval.cancel(timer);
+                    }
+                }, 100);
+            }
+        });
+            
+        //发送标志
+        socket.on("sendflagEvent", function(data){
+            // output('<span class="username-msg">'  + ':</span> ' + data);
+        });
+        /* socket.io END */
+
+        // 
+        $scope.getdataJson = {};        // http获取数据时，所需的条件数据
+        $scope.pandect = '';            // 存储筛选条件
+        $scope.cmsBasicInf = [];        // 存储情报板基本信息
+        $scope.cmsCount = 0;            // 情报板数量
+        $scope.cmsChecked = [];         // 存储被选择的情报板信息
+        $scope.io = false;              // 动态数据可以整合的标志
+        $scope.patrolBegin = true;      // 巡检启动标志，防止多次启动 
+        $scope.patrolTimer = '';        // 巡检定时器
+        $scope.browse = [];             // 巡检定模型盒子
+        $scope.alertArr = [100000,100001];// 正常状态码
+        $scope.pandectJson = {          // 存储筛选项信息
+            lines: [],
+            roads: [],
+            position: [],
+            direct: [],
+            types: []
+        };
+        $scope.pandectFlag = {          // 用来判断情报板是否显示的标志，需配合筛选项
+            lines: true,
+            roads: true,
+            position: true,
+            direct: true,
+            types: true
+        };
+        $scope.deviceMap = new Map();
+
+        // function
+        // 选择或取消选择情报板
+        $scope.ich = function(dev, org, val){
+            if(val){
+                $scope.cmsChecked.push(org + '' + dev);
+                return;
+            }
+            if(!val){
+                while($.inArray((org + '' + dev), $scope.cmsChecked) >= 0){
+                    $scope.cmsChecked.splice($.inArray((org + '' + dev), $scope.cmsChecked), 1);
+                }
+            }
+        };
+        
+        // 存储筛选条件
+        $scope.pandectThen = function(data){
+            $scope.pandect = data.data;
+        };
+
+        // 设备筛选
+        $scope.deviceshow = function(road, position, direct, types, droad, dposition, ddirect, dtypes){
+            if(road && position && direct && types){
+                return true;
+            } else {
+                var _arr = [road, position, direct, types],
+                    _arr_dev = [droad, dposition, ddirect, dtypes];
+                for(var i = 0, l = _arr.length; i < l; i++){
+                    if(_arr[i]){
+                        _arr_dev[i] = '';
+                    }
+                }
+                var _boo = true;
+                for(var i = 0, l = _arr_dev.length; i < l; i++){
+                    if(_arr_dev[i] === ''){
+                        continue;
+                    }
+                    _boo = _boo && _arr_dev[i];
+                }
+                return _boo;
+            }
+        };
+
+        // 重置滚动条
+        $scope.resetScroll = function(time){
+            $timeout(function(){
+                customFunc();
+            }, time);
+        };
+
+        // 获取基本信息
+        $scope.cbiThen = function(data){
+            // 获取设备的采集变量信息
+            $scope.getdata('/cms/getCmsDeviceVarValueInfos.from', JSON.stringify($scope.getdataJson), $scope.cbiLast, data.data);
+        };
+
+        // 编辑设备属性，用于显示
+        $scope.cbiLast = function(data){
+            var _data = data.data;
+            $scope.prevdata = data.successData;
+            // 基本信息
+            $scope.cmsCount = $scope.prevdata.length;
+            for(var i = 0, l = $scope.prevdata.length; i < l; i++){
+                $scope.prevdata[i].roads = true;
+                $scope.prevdata[i].position = true;
+                $scope.prevdata[i].direct = true;
+                $scope.prevdata[i].types = true;
+                $scope.prevdata[i].deviceVar = {};
+                $scope.prevdata[i].status = {
+                    alertType: {},
+                    alertArr: [],
+                    alertText: '正常',
+                    alertColor: '#029d0c'
+                };
+                var _prevdata = {};
+                var j = 0, jl = $scope.cmsBasicInf.length;
+                for(; j < jl; j++){
+                    if($scope.cmsBasicInf[j].id == $scope.prevdata[i].routeLineId){
+                        if($.inArray($scope.prevdata[i].roadId, $scope.cmsBasicInf[j].roadArr) < 0){
+                            $scope.cmsBasicInf[j].roadArr.push($scope.prevdata[i].roadId);
+                        }
+                        $scope.cmsBasicInf[j].devices.push($scope.prevdata[i]);
+                        break;
+                    }
+                }
+                if(j === jl){
+                    $scope.cmsBasicInf[jl] = {};
+                    $scope.cmsBasicInf[jl].id = $scope.prevdata[i].routeLineId;
+                    $scope.cmsBasicInf[jl].name = $scope.prevdata[i].routeLineName;
+                    $scope.cmsBasicInf[jl].roadArr = [];
+                    $scope.cmsBasicInf[jl].roadArr.push($scope.prevdata[i].roadId);
+                    $scope.cmsBasicInf[jl].devices = [];
+                    $scope.cmsBasicInf[jl].devices.push($scope.prevdata[i]);
+                    $scope.cmsBasicInf[jl].lines = true;
+                    $scope.cmsBasicInf[jl].roads = true;
+                }
+                _prevdata.lineX = j;
+                _prevdata.devX = $scope.cmsBasicInf[j].devices.length - 1;
+                $scope.deviceMap.put($scope.prevdata[i].orgId + '' + $scope.prevdata[i].deviceId, _prevdata);
+            }
+            for(var i = 0, l = _data.length; i < l; i++){
+                var _key = _data[i].orgId + '' + _data[i].deviceId,
+                    _deviceX = $scope.deviceMap.get(_key);
+                $scope.cmsBasicInf[_deviceX.lineX].devices[_deviceX.devX].deviceVar[(_data[i].typeId + '')] = _data[i];
+            }
+            $scope.io = true;
+        };
+
+        $scope.uploadData = function(resp){
+            if(!$scope.io){
+                return $scope.io;
+            }
+            var data = (JSON.parse(resp)).datalist,
+                browseArr = [];
+            console.log(data);
+            for(var i = 0, l = data.length; i < l; i++){
+                var key = data[i].orgid + '' + data[i].deviceid,
+                    deviceX = $scope.deviceMap.get(key),
+                    browseNo = deviceX.devX;
+
+                var devicevar = $scope.cmsBasicInf[deviceX.lineX].devices[deviceX.devX].deviceVar;
+                for(var j in devicevar){
+                    if(devicevar[j].deviceVarId == data[i].deivcevarid && typeof(eval(data[i].devicevarvalue)) == 'object'){
+                        console.log(eval(data[i].devicevarvalue));
+                        devicevar[j].deviceVarValue = eval(data[i].devicevarvalue);
+                        break;
+                    }
+                }
+                if(!$scope.patrolBegin){
+                    for(var k = 0, kl = deviceX.lineX; k < kl; k++){
+                        browseNo = parseInt(browseNo) + $scope.cmsBasicInf[k].length;
+                    }
+                    browseArr.push(browseNo);
+                    console.log(browseArr);
+                }
+                
+            }
+            console.log($scope.cmsBasicInf);
+            console.log($scope.deviceMap);
+            console.log($scope.browse);
+            if($scope.patrolBegin){
+                $timeout(function(){
+                    $scope.patrol();
+                }, 20);
+            } else {
+                $scope.patrolRunning(browseArr);
+            }
+            return $scope.io;
+        };
+
+        $scope.uploadStatus = function(resp){
+            if(!$scope.io){
+                return $scope.io;
+            }
+            var data = (JSON.parse(resp)).alertlist;
+            console.log(data);
+            for(var i = 0, l = data.length; i < l; i++){
+                var key = data[i].orgid + '' + data[i].deviceid,
+                    deviceX = $scope.deviceMap.get(key);
+                var status = $scope.cmsBasicInf[deviceX.lineX].devices[deviceX.devX].status;
+                if(status.alertType[data[i].devicevartype]){
+                    if($.inArray(data[i].alertid, $scope.alertArr) >= 0){
+                        delete status.alertType[data[i].devicevartype];
+                        var _jsonN = $.inArray(data[i].alertDesc, status.alertArr);
+                        status.alertArr.splice(_jsonN, 1);
+                    } else {
+                        status.alertType[data[i].devicevartype].id = data[i].alertid;
+                        status.alertType[data[i].devicevartype].desc = data[i].alertDesc;
+                    }
+                } else {
+                    status.alertType[data[i].devicevartype] = {};
+                    status.alertType[data[i].devicevartype].id = data[i].alertid;
+                    status.alertType[data[i].devicevartype].desc = data[i].alertDesc;
+                    status.alertArr.push(data[i].alertDesc);
+                }
+                if($.isEmptyObject(status.alertType)){
+                    status.alertText = '正常';
+                    status.alertColor = '#029d0c';
+                } else {
+                    status.alertText = '故障';
+                    if(status.alertArr.length === 1){
+                        status.alertText = status.alertArr[0];
+                    }
+                    status.alertColor = '#ff0000';
+                }
+            }
+            return $scope.io;
+        };
+
+        // 巡检
+        $scope.patrol = function(){
+            $scope.patrolBegin = false;
+            var browse = $('browse');
+            for(var i = 0, l = browse.length; i < l; i++){
+                var _bcms = browse.eq(i).find('bcms');
+                var _browse = {};
+                _browse.screens = [];
+                _browse.tips = [];
+                _browse.count = 0;
+                _browse.length = 0;
+                _browse.width = _bcms.width();
+                _browse.height = _bcms.height();
+                if(browse.eq(i).find('pwrap').length > 0){
+                    var _pwrap = browse.eq(i).find('pwrap'),
+                        _cnav = browse.eq(i).find('cnav').find('p');
+                    _browse.length = _pwrap.length;
+                    _pwrap.eq(0).css('right', 0);
+                    _cnav.eq(0).css('width', '16px');
+                    for(var j = 0, jl = _pwrap.length; j < jl; j++){
+                        _browse.screens.push(_pwrap.eq(j));
+                        _browse.tips.push(_cnav.eq(j));
+                    }
+                }
+                $scope.browse.push(_browse);
+                // console.log($scope.browse);
+            }
+            
+            $scope.patrolTimer = $interval(function(){
+                console.log($scope.browse);
+                for(var i = 0, l = $scope.browse.length; i < l; i++){
+                    if($scope.browse[i].screens.length > 0){
+                        if($scope.browse[i].screens[0].parents('bpreview').attr('stop') == 'true'){
+                            continue;
+                        }
+                        (function(i){
+                            var screen = $scope.browse[i].screens,
+                                tips = $scope.browse[i].tips,
+                                count = $scope.browse[i].count,
+                                length = $scope.browse[i].length,
+                                width = $scope.browse[i].width,
+                                height = $scope.browse[i].height,
+                                _screen = screen[count];
+                            _screen.animate({'right': width + 'px'}, 200, 'swing', function(){
+                                _screen.css({'right': '-100%'});
+                            });
+                            tips[count].animate({'width': '8px'}, 200, 'swing');
+                            count++;
+                            if(count > length - 1){
+                                count = 0;
+                            }
+                            screen[count].animate({'right': 0 + 'px'}, 200, 'swing');
+                            tips[count].animate({'width': '16px'}, 200, 'swing');
+                            $scope.browse[i].count = count;
+                        })(i);
+                    }
+                }
+            }, 2000);
+        };
+
+        $scope.patrolRunning = function(browseArr){
+            console.log(browseArr);
+            var browse = $('browse');
+            for(var i = 0, l = browseArr.length; i < l; i++){
+                var browseNo = browseArr[i];
+                // $scope.browse[browseNo]
+                // var _bcms = browse.eq(browseNo).find('bcms');
+                // var _browse = {};
+                // _browse.screens = [];
+                // _browse.tips = [];
+                // _browse.count = 0;
+                // _browse.length = 0;
+                // _browse.width = _bcms.width();
+                // _browse.height = _bcms.height();
+                if(browse.eq(browseNo).find('pwrap').length > 0){
+                    var _pwrap = browse.eq(browseNo).find('pwrap'),
+                        _cnav = browse.eq(browseNo).find('cnav').find('p');
+                    $scope.browse[browseNo].length = _pwrap.length;
+                    console.log(_pwrap.eq(0));
+                    console.log(_cnav[0]);
+                    _pwrap.eq(0).css('right', 0);
+                    _cnav.eq(0).css('width', '16px');
+                    $scope.browse[browseNo].screens = [];
+                    $scope.browse[browseNo].tips = [];
+                    for(var j = 0, jl = _pwrap.length; j < jl; j++){
+                        $scope.browse[browseNo].screens.push(_pwrap.eq(j));
+                        $scope.browse[browseNo].tips.push(_cnav.eq(j));
+                    }
+                }
+                console.log($scope.browse);
+                // $scope.browse.push(_browse);
+                // console.log($scope.browse);
+            }
+        };
+
+        // 重置筛选项
+        $scope.resetPandect = function(){
+            for(var i in $scope.pandectJson){
+                $scope.pandectJson[i] = [];
+            }
+            for(var i in $scope.pandectFlag){
+                $scope.pandectFlag[i] = true;
+            }
+        };
+
+
+
+
+
+
+        // http方法（通用）
+        $scope.getdata = function(url, data, successFn, successData, errorFn, errorData){
+            $http({
+                method: 'POST',
+                url: basepath + url + '?ran=' + Math.random(),
+                data: data,
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8'
+                }  
+            })
+            .then(function(resp){
+                resp.successData = successData;
+                successFn(resp);
+            }, function(resp){
+                resp.errorData = errorData;
+                errorFn(resp);
+            });
+        };
+
+        $(window).ready(function(){
+            // 获取筛选项信息
+            $scope.getdata('/cms/getSearchCondition.from', JSON.stringify($scope.getdataJson), $scope.pandectThen);
+            // 获取设备基本信息
+            $scope.getdata('/cms/getCmsBasicInfos.from', JSON.stringify($scope.getdataJson), $scope.cbiThen);
+        });
+	}])
+})(angular);
+

@@ -1,0 +1,116 @@
+(function(angular) {
+
+	var directives = angular.module('app.directives', []);
+
+	directives
+	.directive('polFrame', function(){
+		return {
+			restrict: 'E', 
+			templateUrl: basepath + '/cms/pollingFrame.from',
+			replace: true,
+			link: function(scope, element, attrs){
+				element.css({
+					width: $(window).width() - 20,
+					height: $(window).height() - 20
+				});
+			}
+		};
+	})
+
+	.directive('polAside', function(){
+		return {
+			restrict: 'EA', 
+			templateUrl: basepath + '/cms/pollingAside.from',
+			replace: true,
+			scope: {
+				aside: '=',
+				pandect: '='
+			},
+			link: function(scope, element, attrs){
+				element.css({
+					height: $(window).height() - 20 - 42
+				});
+				customFunc();
+			}
+		};
+	})
+	
+	.directive('cmslist', function($timeout){
+		return {
+			link: function(scope, element, attrs){
+				$timeout(function(){
+					element.css({
+						height: $(window).height() - 20 - 42 - $('pollist > header').height()
+					});
+					customFunc();
+				},10);
+			}
+		};
+	})
+
+	.directive('pollist', function($timeout){
+		return {
+			link: function(scope, element, attrs){
+				$timeout(function(){
+					element.css({
+						width: $('polling').outerWidth(true) - $('polaside').outerWidth(true) - 2 * (parseInt($('polling').css('margin-left')) + 1),
+						height: $(window).height() - 20 - 42
+					});
+				},10);
+			}
+		};
+	})
+	
+	.directive('listArea', function(){
+		return {
+			restrict: 'E', 
+			templateUrl: basepath + '/cms/polArea.from',
+			replace: true,
+			scope: {
+				pollists: '=',
+				ich: '&'
+			},
+			link: function(scope, element, attrs){
+				
+			}
+		};
+	})
+	
+	.directive('listheader', function($timeout){
+		return {
+			link: function(scope, element, attrs){
+				$timeout(function(){
+					element.css({
+						width: $('pollist').outerWidth(true) - 32
+					});
+				},10);
+			}
+		};
+	})
+	
+	.directive('listarea', function($timeout){
+		return {
+			link: function(scope, element, attrs){
+				$timeout(function(){
+					element.css({
+						width: $('pollist').outerWidth(true) - 16
+					});
+				},10);
+			}
+		};
+	})
+	
+	.directive('devtpl', function($timeout){
+		return {
+			link: function(scope, element, attrs){
+				$timeout(function(){
+					element.css({
+						width: ($('listarea').outerWidth(true) - 8 * 5) / 4 - 3
+					});
+					customFunc();
+				},10);
+			}
+		};
+	})
+
+})(angular);

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd	
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+	<mvc:default-servlet-handler/>
+	
+	<context:component-scan base-package="com.boco.controller"/>
+	<context:component-scan base-package="com.boco.interceptor"/>	
+	<context:component-scan base-package="com.boco.config"/>
+		
+	<mvc:annotation-driven/>	
+	
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsp/"></property>
+		<property name="suffix" value=".jsp"></property>
+	</bean>
+	
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="defaultEncoding" value="utf-8"></property>
+		<property name="maxUploadSize" value="10485760000"></property>
+		<property name="maxInMemorySize" value="40960"></property>
+	</bean>  
+	
+	<!-- 注册拦截器 -->
+	<mvc:interceptors>
+		<!-- 登录拦截器 -->
+		<mvc:interceptor>
+			<!-- 
+				第一个*代表Controller类的访问路径
+				第二个*代表Controller方法的访问路径
+				即所有的方法都要受此拦截器检查 -->
+			<mvc:mapping path="/**"/>
+			<!-- 除以下登录方法，应包括登录成功之前的调用所有方法 -->
+			<mvc:exclude-mapping path="/login/*"/>
+			<bean class="com.boco.interceptor.CheckLoginInterceptor"/>
+		</mvc:interceptor>
+	</mvc:interceptors>
+	
+</beans>

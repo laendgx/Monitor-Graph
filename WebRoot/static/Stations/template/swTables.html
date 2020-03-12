@@ -1,0 +1,57 @@
+<div class='sw-tables' customattr='scroll'>
+	<div class='for-table_wrap' custombody='normal'>
+		<section ng-repeat='table in data track by $index'>
+			<p>{{table.title}}</p>
+			<table>
+				<thead>
+					<tr>
+						<th ng-repeat='tabth in table.tableHead track by $index' width='{{tabth.wid}}'>{{tabth.name}}</th>
+					</tr>
+				</thead>
+				<tbody ng-repeat='tabbody in table.tableLine track by $index'>
+					<tr>
+						<td rowspan='2'>{{tabbody.num}}</td>
+						<td rowspan='2'>{{tabbody.serial}}</td>
+						<td rowspan='2'>{{tabbody.location}}</td>
+						<td rowspan='2'>{{tabbody.time}}</td>
+						<td>{{tabbody.lines[0].line}}</td>
+						<td>{{tabbody.lines[0].fperc}}</td>
+						<td>{{tabbody.lines[0].tperc}}</td>
+						<td>{{tabbody.lines[0].gap}}</td>
+						<td ng-if='table.type==1'>{{tabbody.lines[0].scflow}}</td>
+						<td ng-if='table.type==1'>{{tabbody.lines[0].scspeed}}</td>
+						<td ng-if='table.type==1'>{{tabbody.lines[0].lcflow}}</td>
+						<td ng-if='table.type==1'>{{tabbody.lines[0].lcspeed}}</td>
+						<td>{{tabbody.lines[0].stflow}}</td>
+						<td>{{tabbody.lines[0].stspeed}}</td>
+						<td>{{tabbody.lines[0].mtflow}}</td>
+						<td>{{tabbody.lines[0].mtspeed}}</td>
+						<td>{{tabbody.lines[0].ltflow}}</td>
+						<td>{{tabbody.lines[0].ltspeed}}</td>
+						<td>{{tabbody.lines[0].otherflow}}</td>
+						<td>{{tabbody.lines[0].otherspeed}}</td>
+						<td rowspan='2' ng-bind-html='tabbody.operation | trustHtml'></td>
+					</tr>
+					<tr>
+						<td>{{tabbody.lines[1].line}}</td>
+						<td>{{tabbody.lines[1].fperc}}</td>
+						<td>{{tabbody.lines[1].tperc}}</td>
+						<td>{{tabbody.lines[1].gap}}</td>
+						<td ng-if='table.type==1'>{{tabbody.lines[1].scflow}}</td>
+						<td ng-if='table.type==1'>{{tabbody.lines[1].scspeed}}</td>
+						<td ng-if='table.type==1'>{{tabbody.lines[1].lcflow}}</td>
+						<td ng-if='table.type==1'>{{tabbody.lines[1].lcspeed}}</td>
+						<td>{{tabbody.lines[1].stflow}}</td>
+						<td>{{tabbody.lines[1].stspeed}}</td>
+						<td>{{tabbody.lines[1].mtflow}}</td>
+						<td>{{tabbody.lines[1].mtspeed}}</td>
+						<td>{{tabbody.lines[1].ltflow}}</td>
+						<td>{{tabbody.lines[1].ltspeed}}</td>
+						<td>{{tabbody.lines[1].otherflow}}</td>
+						<td>{{tabbody.lines[1].otherspeed}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+	</div>
+</div>

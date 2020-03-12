@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="CmsMapper">
+	<!-- 获取情报板的基础信息 -->	
+	<select id="getCmsBasicInfos" parameterType="java.util.Map" resultType="JkptTxxtDeviceCms">
+		select t.*,
+       (select x.dicname from jkpt_comm_paramdic x where x.grouptype='CmsType' and x.dicvalue=t.cmstype) cmstypedesc,
+       (select y.dicname from jkpt_comm_paramdic y where y.grouptype='CmsSize' and y.dicvalue=t.cmssize) cmssizedesc,
+       (select z.dicname from jkpt_comm_paramdic z where z.grouptype='CmsColor' and z.dicvalue=t.cmscolor) cmscolordesc
+		from (select a.orgid,
+		       a.deviceid,
+		       a.deviceabb,
+		       a.devicetypeid,
+		       a.deviceattrid,
+		       a.devicename,
+		       a.devicepegno,
+		       a.deviceaddress,
+		       a.deviceposition,
+		       a.deviceprefadid,
+		       a.graphfileid,
+		       a.memo,
+		       a.screenx,
+		       a.roadid,
+		       a.screeny,
+		       a.symbolstyle,
+		       a.devicegroupid,
+		       a.isscreencopy,
+		       a.devicelayerid,
+		       a.vorgid,
+		       a.routelineid,
+		       a.devicedirect,
+		       (select b.orgname from jkpt_glxt_organization b where b.orgid=a.orgid) orgname,
+		       (select c.dicname from jkpt_comm_paramdic c where c.grouptype='DevicePosition' and c.dicvalue=a.deviceposition) devicepositiondesc,
+		       (select d.dicname from jkpt_comm_paramdic d where d.grouptype='DeviceDirect' and d.dicvalue=a.deviceposition) devicedirectdesc,
+		       (select e.roadname from jkpt_base_org_road e where e.roadid=a.roadid and e.orgid=a.orgid) roadname,
+		       (select f.roadname from jkpt_base_road f where f.routelineid = a.routelineid) routelinename,
+		       (select h.fixedgraphtypeid from JKPT_TXXT_ISSUEPARAM h where h.devicetypeid = a.devicetypeid) fixedgraphtypeid,
+		       (select h.typeid from JKPT_TXXT_ISSUEPARAM h where h.devicetypeid = a.devicetypeid) issuedtypeid,
+		       g.cmstype, g.cmssize, g.cmscolor
+		  from jkpt_txxt_device a, jkpt_txxt_cmsproperty g where g.orgid=a.orgid and g.deviceid=a.deviceid		  
+		  <if test="orgid != null">
+		  	and a.orgid = #{orgid, jdbcType=NUMERIC}
+		  </if>
+		   ) t		  
+	</select>
+	
+	<!-- 获取cms设备变量的信息 -->
+	<select id="getCmsDeviceVarValueInfos" resultType="DeviceVarValueInfo">
+	<![CDATA[
+	select t.* from
+	(select a.orgid, a.devicevarid, a.typeid, a.devicevardesc,a.other, 
+	b.deviceid, c.typedesc, c.unit, c.superiortypeid, c.isrefresh, d.devicepegno,
+	c.devicetypeid
+	from jkpt_cjxt_devicevar a
+	left join jkpt_txxt_devicegather b on b.orgid=a.orgid and b.devicevarid=a.devicevarid
+	left join jkpt_cjxt_devicevartype c on a.typeid=c.typeid
+	left join jkpt_txxt_device d on d.orgid=b.orgid and d.deviceid=b.orgid) t
+	where t.devicetypeid>=2100 and t.devicetypeid < 2300
+	]]>
+	</select>
+	
+	<!-- 插入固定播放表 -->
+	<insert id="insertCmsFixedCommand" parameterType="JkptTxxtFixedCommand">
+		insert into jkpt_txxt_fixedcommand
+  		(commandid, commandname, commandtype, groupid, fixvalue, command)
+		values (
+		#{commandId, jdbcType=NUMERIC}, 
+		#{commandName, jdbcType=VARCHAR}, 
+		#{commandType, jdbcType=NUMERIC}, 
+		#{groupId, jdbcType=VARCHAR}, 
+		#{fixValue, jdbcType=NUMERIC}, 
+		#{command, jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<!-- 获取情报板固定播放表的最大id -->
+	<select id="getMaxCommandId" resultType="java.lang.Integer">
+		select nvl(max(t.commandid),0) from jkpt_txxt_fixedcommand t
+	</select>
+	
+	<!-- 查询播放表 -->
+	<select id="getCmsFixedCommands" parameterType="java.util.Map" resultType="JkptTxxtFixedCommand">
+		select t.commandid, t.commandname, t.commandtype, t.groupid, t.fixvalue, t.command,
+		(select d.dicname from jkpt_comm_paramdic d where d.grouptype='CmsPlayListGroup' and d.dicvalue=t.groupid) groupname
+		 from jkpt_txxt_fixedcommand t
+		<where>
+			t.commandtype = #{commandType, jdbcType=NUMERIC}
+			<if test="groupId != null and groupId != ''">
+				and t.groupid = #{groupId, jdbcType=VARCHAR}
+			</if>
+			
+		</where>
+	</select>
+</mapper>

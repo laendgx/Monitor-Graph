@@ -1,0 +1,37 @@
+<%@ page pageEncoding="UTF-8"%>
+<cmsmodel>
+	<header>
+		<span>情报板</span>
+		<i>×</i>
+	</header>
+	<btns>
+		<p>天气提醒</p>
+		<p>天气提醒</p>
+		<p>天气提醒</p>
+		<p>天气提醒</p>
+		<modsearch>
+			<input type="text">
+			<i></i>
+		</modsearch>
+	</btns>
+	<list>
+		<div class="table">
+			<table>
+				<thead>
+					<th>
+						<td>序号</td>
+						<td>节目单内容</td>
+						<td>操作</td>
+					</th>
+				</thead>
+				<tbody>
+					<tr>
+						<td>1</td>
+						<td>1</td>
+						<td>1</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</list>
+</cmsmodel>

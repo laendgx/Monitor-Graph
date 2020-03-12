@@ -1,0 +1,30 @@
+(function(angular) {
+
+	var directives = angular.module('app.directives', []);
+
+	directives.directive('tBrowse', function(){
+		return {
+			restrict: 'EA', 
+			templateUrl: basebath + '/cms/tbrowse.from',
+//			scope:{
+//				cmsText: '='
+//			},
+			replace: true,
+			link: function(scope, element, attrs){
+				
+			}
+		};
+	})
+
+	.directive('tEdit', function(){
+		return {
+			restrict: 'EA', 
+			templateUrl: basebath + '/cms/tedit.from',
+			replace: true,
+			link: function(scope, element, attrs){
+				
+			}
+		};
+	})
+
+})(angular);

@@ -1,0 +1,166 @@
+(function(angular) {
+
+	var directives = angular.module('app.directives', []);
+
+	directives
+	.directive('configuration', ['$timeout', function($timeout){
+		return {
+			restrict: 'EA', 
+			templateUrl: basepath + '/cms/eagle.from',
+			replace: true,
+			link: function(scope, element, attrs){
+				element.css({
+					width: $(window).width() - 40,
+					height: $(window).height() - 40
+				})
+				$timeout(function(){
+					scope.moveNeagle(element);
+				}, 100);
+			}
+		};
+	}])
+
+	.directive('compile', ['$timeout', function($timeout){
+		return {
+			restrict: 'EA', 
+			templateUrl: basepath + '/cms/cmsCompile.from',
+			replace: true,
+			link: function(scope, element, attrs){
+				$timeout(function(){
+					// scope.moveNeagle(element);
+				}, 100);
+			}
+		};
+	}])
+
+	.directive('list', ['$timeout', function($timeout){
+		return {
+			restrict: 'EA', 
+			templateUrl: basepath + '/cms/cmsList.from',
+			replace: true,
+			link: function(scope, element, attrs){
+				$timeout(function(){
+					// scope.moveNeagle(element);
+				}, 100);
+			}
+		};
+	}])
+
+	.directive('cmsTpl', ['$timeout', function($timeout){
+		return {
+			restrict: 'EA', 
+			templateUrl: basepath + '/cms/cfgCmsTpl.from',
+			replace: true,
+			scope: {
+				info: '=',
+				sflag: '='
+			},
+			link: function(scope, element, attrs){
+				$timeout(function(){
+					// scope.moveNeagle(element);
+				}, 100);
+			}
+		};
+	}])
+
+	.directive('multiTxta', ['$timeout', function($timeout){
+		return {
+			restrict: 'EA', 
+			templateUrl: basepath + '/cms/multiTextarea.from',
+			replace: true,
+			link: function(scope, element, attrs){
+				$timeout(function(){
+					// scope.moveNeagle(element);
+				}, 100);
+			}
+		};
+	}])
+
+	.directive('edit', ['$timeout', function($timeout){
+		return {
+			restrict: 'EA', 
+			templateUrl: basepath + '/cms/cfgCmsEdit.from',
+			replace: true,
+			link: function(scope, element, attrs){
+				$timeout(function(){
+					// scope.moveNeagle(element);
+				}, 100);
+			}
+		};
+	}])
+
+	.directive('editTpl', ['$timeout', function($timeout){
+		return {
+			restrict: 'EA', 
+			templateUrl: basepath + '/cms/cmsEditTpl.from',
+			replace: true,
+			// scope: {
+			// 	header: '@',
+			// 	viewdiv: '@',
+			// 	info: '@',
+			// 	model: '='
+			// },
+			link: function(scope, element, attrs){
+				$timeout(function(){
+					// scope.moveNeagle(element);
+				}, 100);
+			}
+		};
+	}])
+
+	.directive('inputs', function(){
+		return {
+			restrict: 'A', 
+			link: function(scope, element, attrs){
+				var inputs = element.find('input');
+				for(var i = 0, l = inputs.length; i < l; i++){
+					var next = inputs.eq(i).next();
+					inputs.eq(i).css({
+						'top': next[0].offsetTop,
+						'left': next[0].offsetLeft
+					});
+				}
+			}
+		};
+	})
+
+	.directive('cmstextarea', function(){
+		return {
+			restrict: 'A', 
+			link: function(scope, element, attrs){
+				element.bind('change', function(){
+					var val = element.val().replace(/\n+/g,'\n');
+					var l = val.split('\n').length,
+						t = val.lastIndexOf('\n');
+					element.attr('enterrow', l);
+					element.attr('enterposi', t);
+				});
+			}
+		};
+	})
+
+	.directive('tablelist', ['$timeout', function($timeout){
+		return {
+			restrict: 'A', 
+			link: function(scope, element, attrs){
+				$timeout(function(){
+					customFunc();
+				}, 1000);
+			}
+		};
+	}])
+
+	.directive('model', ['$timeout', function($timeout){
+		return {
+			restrict: 'EA', 
+			templateUrl: basepath + '/cms/cmsModel.from',
+			replace: true,
+			link: function(scope, element, attrs){
+				$timeout(function(){
+					// scope.moveNeagle(element);
+				}, 100);
+			}
+		};
+	}])
+
+})(angular);

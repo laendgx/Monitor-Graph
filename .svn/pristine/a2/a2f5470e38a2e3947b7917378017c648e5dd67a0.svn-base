@@ -1,0 +1,47 @@
+<%@ page pageEncoding='UTF-8'%>
+<polaside customAttr='scroll'>
+	<polscroll custombody='normal'>
+		<filtrate>
+			<header>路线</header>
+			<filbtn ng-repeat='line in aside.routeLinesList'>
+				<input type='checkbox' name='line' ng-model='pandect.lines[$index]' ng-true-value='"{{line.adminId}}"' ng-false-value='' ng-click='resetfiltrate({time: 30})'>
+				<span>{{line.adminId}}{{line.adminName | cutname}}</span>
+			</filbtn>
+		</filtrate>
+		<filtrate>
+			<header>路段</header>
+			<filbtn ng-repeat='road in aside.roadInfoList'>
+				<input type='checkbox' name='road' ng-model='pandect.roads[$index]' ng-true-value='"{{road.roadid}}"' ng-false-value='' ng-click='resetfiltrate({time: 30})'>
+				<span>{{road.roadname}}</span>
+			</filbtn>
+		</filtrate>
+		<filtrate>
+			<header>位置</header>
+			<filbtn ng-repeat='posi in aside.devicePositionList'>
+				<input type='checkbox' name='posi' ng-model='pandect.position[$index]' ng-true-value='"{{posi.dicValue}}"' ng-false-value='' ng-click='resetfiltrate({time: 30})'>
+				<span>{{posi.dicName}}</span>
+			</filbtn>
+		</filtrate>
+		<filtrate>
+			<header>方向</header>
+			<filbtn ng-repeat='direct in aside.deviceDirectList'>
+				<input type='checkbox' name='direct' ng-model='pandect.direct[$index]' ng-true-value='"{{direct.dicValue}}"' ng-false-value='' ng-click='resetfiltrate({time: 30})'>
+				<span>{{direct.dicName}}</span>
+			</filbtn>
+		</filtrate>
+		<filtrate>
+			<header>类型</header>
+			<filbtn ng-repeat='type in aside.cmsTypeList'>
+				<input type='checkbox' name='type' ng-model='pandect.types[$index]' ng-true-value='"{{type.dicValue}}"' ng-false-value='' ng-click='resetfiltrate({time: 30})'>
+				<span>{{type.dicName}}</span>
+			</filbtn>
+		</filtrate>
+		<filtrate class='reset'>
+			<filbtn>
+				<span ng-click='resetfilt()'>重置</span>
+			</filbtn>
+		</filtrate>
+	</polscroll>
+	<maxpol></maxpol>
+	<minpol></minpol>
+</polaside>

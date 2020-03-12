@@ -1,0 +1,55 @@
+<%@ page pageEncoding="UTF-8"%>
+<div class='tplwrap'>
+	<edittpl>
+		<header ng-show='header=="true"' ng-hide='header=="false"'>
+			<p>目标情报板：F型情报板</p>
+			<p>已选数量：<span>55</span>块</p>
+			<div>查看明细</div>
+		</header>
+		<browse>
+			<preview>
+		        <cwrap ng-style='info | cmsStyle:textalign'>
+	        		<div id='{{viewdiv}}'>{{model | modelview:viewid:info:family:size:color:type:time}}</div>
+		        </cwrap>
+		    </preview>
+		</browse>
+	</edittpl>
+	<multitxta>
+	    <btns>
+	        <select ng-model='family'>
+	        	<option value='' hidden>-字体-</option>
+		        <option value='SimHei' selected>黑体</option>
+	        	<option value='SimSun'>宋体</option>
+		        <option value='KaiTi'>楷体</option>
+	        </select>
+	        <select ng-model='size'>
+	        	<option value='' selected hidden>-字号-</option>
+	        	<option value='16'>16</option>
+	        	<option value='24'>24</option>
+	        	<option value='32'>32</option>
+	        	<option value='48'>48</option>
+	        	<option value='64'>64</option>
+	        </select>
+	        <i></i>
+	        <i></i>
+	        <i ng-click='textalign="left"'></i>
+	        <i ng-click='textalign="center"'></i>
+	        <i ng-click='textalign="right"'></i>
+	        <i ng-click='color=="yellow"'></i>
+	        <select ng-model='type'>
+	        	<option value='' hidden>-出字方式-</option>
+	        	<option value='0' selected>立即显示</option>
+	        	<option value='2'>从右到左</option>
+	        	<option value='3'>自下而上</option>
+	        </select>
+	        <select ng-model='time'>
+	        	<option value='' hidden>-停留时间-</option>
+	        	<option value='3' selected>3"</option>
+	        	<option value='4'>4"</option>
+	        	<option value='5'>5"</option>
+	        </select>
+	        <i></i>
+	    </btns>
+	    <textarea ng-model='model'></textarea>
+	</multitxta>
+</div>

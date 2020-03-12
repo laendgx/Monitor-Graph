@@ -1,0 +1,43 @@
+(function(angular) {
+
+	var services = angular.module('app.services', ['ngWebSocket']);
+
+	services.factory('socket', [ '$rootScope', '$websocket', function($rootScope, $websocket) {
+		var socketPath = "/Monitor-CollSvr";
+		var WebSocketAddr = 'ws://127.0.0.1:8080'+ socketPath + "/webSocketServer.from";
+
+		var ws = $websocket(WebSocketAddr);
+		// $websocket('ws://118.145.23.94/rwservice');
+		return ws;
+		// return {
+		// 	onopen : function(callback) {
+		// 		ws.onopen(function() {
+		// 			var args = arguments;
+		// 			$rootScope.$apply(function() {
+		// 				callback.apply(ws, args);
+		// 			});
+		// 		});
+		// 	},
+		// 	onmessage : function(data, callback) {
+		// 		ws.onmessage(data, function() {
+		// 			var args = arguments;
+		// 			$rootScope.$apply(function() {
+		// 				if (callback) {
+		// 					callback.apply(ws, args);
+		// 				}
+		// 			});
+		// 		})
+		// 	},
+		// 	onclose : function(data, callback) {
+		// 		ws.onclose(data, function() {
+		// 			var args = arguments;
+		// 			$rootScope.$apply(function() {
+		// 				if (callback) {
+		// 					callback.apply(ws, args);
+		// 				}
+		// 			});
+		// 		})
+		// 	},
+		// };
+	} ])
+})(angular);

@@ -1,0 +1,32 @@
+package com.boco.test;
+
+import java.util.List;
+
+import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.boco.domain.DeviceVarValueInfo;
+import com.boco.domain.JkptTxxtDeviceCms;
+import com.boco.service.CmsService;
+
+public class CmsServiceTest {
+	@Test
+	public void getCmsBasicInfos() throws Exception{
+		String cfg = "classpath*:spring/ApplicationContext.xml";
+		ApplicationContext ac = new ClassPathXmlApplicationContext(cfg);
+		CmsService service = ac.getBean(CmsService.class, "cmsService");
+		List<JkptTxxtDeviceCms> list = service.getCmsBasicInfos(20300);
+		
+		System.out.println(list.size());
+	}
+	
+	@Test
+	public void getCmsDeviceVarValueInfos() throws Exception{
+		String cfg = "classpath*:spring/ApplicationContext.xml";
+		ApplicationContext ac = new ClassPathXmlApplicationContext(cfg);
+		CmsService service = ac.getBean(CmsService.class,"cmsService");
+		List<DeviceVarValueInfo> list = service.getCmsDeviceVarValueInfos();
+		System.out.println(list.size());
+	}
+}

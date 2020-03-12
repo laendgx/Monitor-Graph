@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="UserMapper">
+	<!-- 根据登录id，获取用户信息 -->
+	<select id="getUserInfoByLoginId" parameterType="java.util.Map" resultType="JkptBaseUser">
+		select * from (
+		select usercode, username, sex, nation, contact, 
+		orgid, roleid, password, userid, status, loginid, 
+		dutiesid from jkpt_base_user 
+		where loginid=#{loginid, jdbcType=VARCHAR}
+		) where rownum=1
+	</select>
+</mapper>

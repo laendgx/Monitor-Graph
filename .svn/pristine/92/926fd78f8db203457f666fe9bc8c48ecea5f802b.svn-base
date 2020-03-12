@@ -1,0 +1,70 @@
+(function(angular) {
+
+	var directives = angular.module('app.directives', []);
+
+	directives
+	.directive('polFrame', function(){
+		return {
+			restrict: 'E', 
+			templateUrl: basepath + '/cms/pollingFrame.from',
+			replace: true,
+			link: function(scope, element, attrs){
+				
+			}
+		};
+	})
+
+	.directive('polAside', function(){
+		return {
+			restrict: 'EA', 
+			templateUrl: basepath + '/cms/pollingAside.from',
+			replace: true,
+			scope: {
+				aside: '='
+			},
+			link: function(scope, element, attrs){
+				
+			}
+		};
+	})
+
+	.directive('polList', function(){
+		return {
+			restrict: 'E', 
+			templateUrl: basepath + '/cms/pollingList.from',
+			replace: true,
+			link: function(scope, element, attrs){
+
+			}
+		};
+	})
+	
+	.directive('listArea', function(){
+		return {
+			restrict: 'E', 
+			templateUrl: basepath + '/cms/polArea.from',
+			replace: true,
+			scope: {
+				pollists: '='
+			},
+			link: function(scope, element, attrs){
+				
+			}
+		};
+	})
+	
+	.directive('polTel', function(){
+		return {
+			restrict: 'E', 
+			templateUrl: basepath + '/cms/polTel.from',
+			replace: true,
+			scope: {
+				tellists: '='
+			},
+			link: function(scope, element, attrs){
+				
+			}
+		};
+	})
+
+})(angular);

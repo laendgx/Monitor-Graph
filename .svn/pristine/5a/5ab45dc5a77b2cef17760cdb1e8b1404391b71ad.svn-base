@@ -1,0 +1,19 @@
+<%@ page pageEncoding="UTF-8"%>
+<cmsedit>
+	<header>
+		<span>情报板</span>
+		<i>×</i>
+	</header>
+	<div class='guide'>
+		<input type='text' >
+	</div>
+	<div class='tplwrap'>
+		<edit-tpl header='{{editHeader}}' model='editModel[$index]' ng-repeat='a in aaa'></edit-tpl>
+	</div>
+	<footer>
+		<btns>
+			<p>发布</p>
+			<p>取消</p>
+		</btns>
+	</footer>
+</cmsedit>

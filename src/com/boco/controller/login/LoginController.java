@@ -1,0 +1,141 @@
+package com.boco.controller.login;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.boco.domain.JkptBaseUser;
+import com.boco.domain.comm.CommResult;
+import com.boco.domain.sysManager.BaseFuncTree;
+import com.boco.service.UserService;
+import com.boco.utils.ConfigReaderUtils;
+import com.boco.utils.except.UserValidateException;
+
+import rabbitmq.
+
+@Controller
+@RequestMapping("/login")
+public class LoginController {
+	@Resource(name="userService")
+	private UserService userService;
+	
+	/**
+	 * 采集端socketio服务端地址
+	 */
+	private String collSocketIoAddr = ConfigReaderUtils.getCollSocketIoAddr();
+	/**
+	 * js版本号
+	 */
+	private String jsVersion = ConfigReaderUtils.getJsVersion();
+	
+	/**
+	 * 跳转到登录页
+	 * @param model
+	 * @param session
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/toLogin")
+	public String toAdd(ModelMap model, HttpSession session,
+			HttpServletRequest request) throws Exception {
+		try {
+			return "login/login";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw e;
+		}
+	}
+	
+	/**
+	 * 登出
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("/loginOut")
+	public String loginOut(HttpSession session){
+		session.removeAttribute("admin");
+		return "redirect:login/toLogin.from";
+	}
+	
+	/**
+	 * 验证用户信息
+	 * @param map
+	 * @param session
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/login", method = RequestMethod.POST)
+	public @ResponseBody CommResult login(@RequestBody Map map,
+			HttpSession session, HttpServletRequest request) throws Exception {
+		CommResult result = new CommResult();
+		String loginid = (String) map.get("loginId");
+		String pwd = (String) map.get("pwd");
+		try {
+			// 登录验证
+			JkptBaseUser user = userService.getUserInfoByLoginId(loginid, pwd);
+			session.setAttribute("admin", user);
+			session.setAttribute("LoginInfo", user.getUserName());
+			result.setResultCode("100");
+			result.setResultData(user.getUserId());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.setResultCode("101");
+			if (e instanceof UserValidateException){
+				result.setResultMsg(e.getMessage());
+			} else {
+				result.setResultMsg("出现未知异常");
+			}			
+		}
+
+		return result;
+	}
+
+	// 跳转到框架
+	@RequestMapping("/toIndex")
+	public String toIndex(ModelMap model, HttpSession session,
+			HttpServletRequest request) throws Exception {
+		try {
+			String userId = "";
+			JkptBaseUser user = (JkptBaseUser) session.getAttribute("admin");
+			if (user != null) {
+				model.addAttribute("userName", user.getUserName());
+				model.addAttribute("orgName", user.getOrgName());
+				userId = user.getUserId();
+			}
+			SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd");// 设置日期格式
+			model.addAttribute("curDate", df.format(new Date()));
+
+			List<BaseFuncTree> funcTreeList = userService.getFuncTree(user);
+			model.addAttribute("funcTreeList", funcTreeList);
+			
+			String defaultUrl = ConfigReaderUtils.getDefaultUrl();
+			model.addAttribute("defaultUrl", defaultUrl);
+			
+			model.addAttribute("userId", userId);
+			model.addAttribute("collSocketIoAddr", collSocketIoAddr);
+			model.addAttribute("jsVersion", jsVersion);
+			return "Index/index";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw e;
+		}
+	}
+
+}

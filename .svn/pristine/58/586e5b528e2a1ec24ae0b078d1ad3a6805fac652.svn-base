@@ -1,0 +1,57 @@
+<%@ page pageEncoding="UTF-8"%>
+<modelmanage ng-show='modelManage' ng-hide='!modelManage'>
+	<header>
+		<span>模板管理</span>
+		<i ng-click='modelManage=false'>×</i>
+	</header>
+	<btns>
+		<filbtn ng-repeat='type in modelType'>
+			<input type='radio' name='model'>
+			<p>{{type.name}}</p>
+		</filbtn>
+		<modsearch>
+			<input type="text">
+			<i></i>
+		</modsearch>
+	</btns>
+	<modellist customAttr='scroll'>
+		<div class='mlistwrap' custombody='normal'>
+			<div ng-repeat='type in modelType'>
+				<header>{{type.name}}
+					<p>添加节目单</p>
+				</header>
+				<div class="table">
+					<table>
+						<thead>
+							<tr>
+								<th width='6%'>序号</th>
+								<th width='42%'>节目单内容</th>
+								<th width='12%'>门架(320×32)</th>
+								<th width='12%'>F板(192×96)</th>
+								<th width='12%'>F板(128×64)</th>
+								<th width='16%'>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>1</td>
+								<td>1</td>
+								<td><span></span></td>
+								<td><span></span></td>
+								<td><span></span></td>
+								<td>
+									<cc>预览</cc>
+									<cc>修改</cc>
+									<cc>删除</cc>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</modellist>
+	<modelview>
+		
+	</modelview>
+</modelmanage>

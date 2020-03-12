@@ -1,0 +1,158 @@
+package com.boco.domain;
+
+import java.io.Serializable;
+/**
+ * 可变情报板播放表存放
+ * @author Administrator
+ *
+ */
+public class JkptTxxtFixedCommand implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6185936003496486551L;
+
+	/**
+	 * 命令编号			
+	 */
+	private Integer commandId;
+	/**
+	 * 命令名称			
+	 */
+	private String commandName;	
+	/**
+	 * 命令类型，对应设备类型			
+	 */
+	private Integer commandType;	
+	/**
+	 * 分组类型，对应jkpt_comm_paramdic			
+	 */
+	private String groupId;	
+	/**
+	 * 分组类型名称
+	 */
+	private String groupName;
+	/**
+	 * 固定值			
+	 */
+	private Integer fixValue;	
+	/**
+	 * 命令内容，对应设备类型			
+	 */
+	private String command;
+	/**
+	 * 命令标识
+	 */
+	private String guid;
+	/**
+	 * @return the 命令编号
+	 */
+	public Integer getCommandId() {
+		return commandId;
+	}
+	/**
+	 * @param 命令编号 the commandId to set
+	 */
+	public void setCommandId(Integer commandId) {
+		this.commandId = commandId;
+	}
+	/**
+	 * @return the 命令名称
+	 */
+	public String getCommandName() {
+		return commandName;
+	}
+	/**
+	 * @param 命令名称 the commandName to set
+	 */
+	public void setCommandName(String commandName) {
+		this.commandName = commandName;
+	}
+	/**
+	 * @return the 命令类型，对应设备类型
+	 */
+	public Integer getCommandType() {
+		return commandType;
+	}
+	/**
+	 * @param 命令类型，对应设备类型 the commandType to set
+	 */
+	public void setCommandType(Integer commandType) {
+		this.commandType = commandType;
+	}
+	/**
+	 * @return the 分组类型，对应jkpt_comm_paramdic
+	 */
+	public String getGroupId() {
+		return groupId;
+	}
+	/**
+	 * @param 分组类型，对应jkpt_comm_paramdic the groupId to set
+	 */
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
+	}
+	/**
+	 * @return the 固定值
+	 */
+	public Integer getFixValue() {
+		return fixValue;
+	}
+	/**
+	 * @param 固定值 the fixValue to set
+	 */
+	public void setFixValue(Integer fixValue) {
+		this.fixValue = fixValue;
+	}
+	/**
+	 * @return the 命令内容，对应设备类型
+	 */
+	public String getCommand() {
+		return command;
+	}
+	/**
+	 * @param 命令内容，对应设备类型 the command to set
+	 */
+	public void setCommand(String command) {
+		this.command = command;
+	}
+	/**
+	 * @return the 分组类型名称
+	 */
+	public String getGroupName() {
+		return groupName;
+	}
+	/**
+	 * @param 分组类型名称 the groupName to set
+	 */
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
+	}
+	
+	/**
+	 * @return the 命令标识
+	 */
+	public String getGuid() {
+		return guid;
+	}
+	/**
+	 * @param 命令标识 the guid to set
+	 */
+	public void setGuid(String guid) {
+		this.guid = guid;
+	}
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "JkptTxxtFixedCommand [commandId=" + commandId
+				+ ", commandName=" + commandName + ", commandType="
+				+ commandType + ", groupId=" + groupId + ", groupName="
+				+ groupName + ", fixValue=" + fixValue + ", command=" + command
+				+ "]";
+	}				
+	
+	
+}

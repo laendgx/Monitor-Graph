@@ -1,0 +1,87 @@
+(function(angular) {
+
+	var filters = angular.module('app.filters', []);
+
+	filters
+	// 过滤器：筛选区域，去掉‘公路’字样
+	.filter('cutname', function () {
+	    return function (val) {
+		    if (!val){
+		    	return '';
+		    }
+	    	var _val = val.replace(/公路/g,"");
+		  	return _val;
+	    };
+	})
+	// 过滤器：筛选
+	.filter('filtrate', function () {
+	    return function (val, condition) {
+		    if (!val){
+		    	return '';
+		    }
+		    // console.log(val);
+		    // var _val = val;
+	    	if(condition.lines.length > 0){
+	    		var _val = [], _n = 0;
+	    		for(var i = 0, l = condition.lines.length; i < l; i++){
+	    			if(condition.lines[i] == null){
+	    				_n++;
+	    				continue;
+	    			}
+	    			for(var j = 0, jl = val.length; j < jl; j++){
+	    				if(val[j].id == condition.lines[i]){
+	    					_val.push(val[j]);
+	    				}
+	    			}
+	    		}
+	    		if(_n < condition.lines.length){
+		    		val = _val;
+	    		}
+	    	}
+	    	if(condition.roads.length > 0){
+	    		var _val = [], _n = 0;
+	    		for(var i = 0, l = val.length; i < l; i++){
+	    			_val[i] = {};
+	    			_val[i].$$hashKey = val[i].$$hashKey;
+	    			_val[i].id = val[i].id;
+	    			_val[i].name = val[i].name;
+	    			_val[i].roadArr = [];
+	    			_val[i].roadArr = val[i].roadArr;
+	    			_val[i].devices = [];
+	    		}
+	    		for(var i = 0, l = condition.roads.length; i < l; i++){
+	    			if(condition.roads[i] == ''){
+	    				_n++;
+	    				continue;
+	    			}
+	    			for(var j = 0, jl = val.length; j < jl; j++){
+	    				if($.inArray(condition.roads[i], val[j].roadArr) >= 0){
+	    					for(var k = 0, kl = val[j].devices.length; k < kl; k++){
+	    						if(val[j].devices[k].roadId == condition.roads[i]){
+	    							_val[j].devices.push(val[j].devices[k]);
+	    						}
+	    					}
+	    					break;
+	    				}
+	    			}
+	    		}
+	    		if(_n < condition.roads.length){
+		    		// for(var i = 0, l = val.length; i < l; i++){
+		    		// 	val[i].devices = _val[i].devices;
+		    		// }
+		    		return _val;
+	    		}
+	    	}
+	    	if(condition.position.length > 0){
+	    		console.log(condition.position)
+	    	}
+	    	if(condition.direct.length > 0){
+	    		console.log(condition.direct)
+	    	}
+	    	if(condition.types.length > 0){
+	    		console.log(condition.types)
+	    	}
+	    	return val;
+	    };
+	})
+})(angular);

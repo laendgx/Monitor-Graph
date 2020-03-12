@@ -1,0 +1,79 @@
+package com.boco.service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.boco.dao.login.LoginDao;
+import com.boco.dao.user.UserDao;
+import com.boco.domain.JkptBaseUser;
+import com.boco.domain.sysManager.BaseFuncTree;
+import com.boco.utils.except.UserValidateException;
+
+@Service("userService")
+public class UserService {
+	@Resource(name="loginDao")
+	private LoginDao loginDao;
+	
+	@Resource(name="userDao")
+	private UserDao userDao;
+	/**
+	 * 根据用户登录id，获取用户信息
+	 * @param loginid
+	 * @return
+	 * @throws Exception
+	 */
+	public JkptBaseUser getUserInfoByLoginId(String loginid, String pwd) throws UserValidateException{
+		JkptBaseUser user = null;
+		try {
+			user = loginDao.getUserInfoByLoginId(loginid);
+		} catch (Exception e) {
+			throw new UserValidateException("访问数据库出错。");
+		}
+		
+		if (user == null){
+			throw new UserValidateException("用户不存在。");
+		} else {
+			if (user.getPassword().equals(pwd) == false){
+				throw new UserValidateException("用户密码不正确");
+			}
+		}
+		
+		return user;
+	}
+	
+	/**
+	 * 返回当前登录用户的权限菜单及对应的菜单链接信息 
+	 * 
+	 * @param userId
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<BaseFuncTree> getFuncTree(JkptBaseUser user) throws Exception {
+		List<BaseFuncTree> treeList = new ArrayList<BaseFuncTree>();
+		List<BaseFuncTree> list = userDao.getFuncTree(user.getUserId());
+
+		List<BaseFuncTree> parents = new ArrayList<BaseFuncTree>();
+		for (BaseFuncTree funcTree : list) {
+			if (funcTree.getParentId().equals("0")) {
+				parents.add(funcTree);
+			}
+		}
+
+		for (BaseFuncTree parent : parents) {
+			List<BaseFuncTree> childs = new ArrayList<BaseFuncTree>();
+			for (BaseFuncTree funcTree : list) {
+				if (funcTree.getParentId().equals(parent.getId())) {
+					childs.add(funcTree);
+				}
+			}
+			parent.setChildren(childs);
+			treeList.add(parent);
+		}
+
+		return treeList;
+	}
+}

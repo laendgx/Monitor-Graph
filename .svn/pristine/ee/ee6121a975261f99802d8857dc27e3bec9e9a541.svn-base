@@ -1,0 +1,10 @@
+<%@ page pageEncoding="UTF-8"%>
+<!-- <cmwindow>
+	<img src='${pageContext.request.contextPath}/static/Configuration/images/map.png' class='cmap'>
+	<cmap></cmap>
+	<eagle>
+		<eawindow></eawindow>
+		<bgctrl></bgctrl>
+	</eagle>
+</cmwindow> -->
+<span></span>

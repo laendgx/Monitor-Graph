@@ -1,0 +1,40 @@
+package com.boco.service;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.boco.dao.login.LoginDao;
+import com.boco.domain.JkptBaseUser;
+import com.boco.utils.except.UserValidateException;
+
+@Service("userService")
+public class UserService {
+	@Resource(name="loginDao")
+	private LoginDao loginDao;
+	
+	/**
+	 * 根据用户登录id，获取用户信息
+	 * @param loginid
+	 * @return
+	 * @throws Exception
+	 */
+	public JkptBaseUser getUserInfoByLoginId(String loginid, String pwd) throws UserValidateException{
+		JkptBaseUser user = null;
+		try {
+			user = loginDao.getUserInfoByLoginId(loginid);
+		} catch (Exception e) {
+			throw new UserValidateException("访问数据库出错。");
+		}
+		
+		if (user == null){
+			throw new UserValidateException("用户不存在。");
+		} else {
+			if (user.getPassword().equals(pwd) == false){
+				throw new UserValidateException("用户密码不正确");
+			}
+		}
+		
+		return user;
+	}
+}

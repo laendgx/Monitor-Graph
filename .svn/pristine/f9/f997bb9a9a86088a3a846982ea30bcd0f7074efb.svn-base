@@ -1,0 +1,23 @@
+<nav class='sw-nav' customattr="scroll">
+	<div class='for-scroll_wrap clear' custombody="normal">
+		<form>
+			<section ng-repeat='nav in data track by $index' class='clear'>
+				<header>{{nav.title}}</header>
+				<p ng-repeat='sear in nav.val track by $index'>
+					<label>
+						<input type='checkbox' name=''>
+						<span>{{sear}}</span>
+					</label>
+				</p>
+			</section>
+			<footer class='clear'>
+				<p>
+					<label>
+						<input type='reset' name=''>
+						<span>重置</span>
+					</label>
+				</p>
+			</footer>
+		</form>
+	</div>
+</nav>

@@ -1,0 +1,53 @@
+<%@ page pageEncoding="UTF-8"%>
+<modelmanage ng-show='modelManage' ng-hide='!modelManage'>
+	<header>
+		<span>模板管理</span>
+		<i ng-click='modelManage=false;modelTypeList=[]'>×</i>
+	</header>
+	<btns>
+		<filbtn ng-repeat='type in modelType'>
+			<input type='radio' name='model' ng-click='setModelFlag(type)'>
+			<p>{{type.name}}</p>
+		</filbtn>
+		<modsearch>
+			<input type="text">
+			<i></i>
+		</modsearch>
+	</btns>
+	<modellist customAttr='scroll'>
+		<div class='mlistwrap' custombody='normal'>
+			<div>
+				<header>{{modelTypeName}}
+					<p ng-click='modelEditFn()'>添加节目单</p>
+				</header>
+				<div class="table">
+					<table>
+						<thead>
+							<tr>
+								<th width='6%'>序号</th>
+								<th width='42%'>节目单内容</th>
+								<th width='{{(36 / cmsTypeList.length)}}%' ng-repeat='cmstype in cmsTypeList'>{{cmstype.cmsType}}({{cmstype.cmsSize}})</th>
+								<th width='16%'>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat='model in modelTypeList'>
+								<td>{{($index + 1)}}</td>
+								<td>{{model.text}}</td>
+								<td ng-repeat='cmstype in cmsTypeList'><span ng-show='modelExist(cmstype.cmsType, cmstype.cmsSize, model.showArr)' ng-hide='!modelExist(cmstype.cmsType, cmstype.cmsSize, model.showArr)'></span></td>
+								<td>
+									<cc>预览</cc>
+									<cc ng-click='editModelList(model)'>修改</cc>
+									<cc>删除</cc>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</modellist>
+	<modelview>
+		
+	</modelview>
+</modelmanage>

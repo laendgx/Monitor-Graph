@@ -1,0 +1,8 @@
+<%@ page pageEncoding="UTF-8"%>
+<polling>
+	<header>
+		<span>情报板巡检</span>
+	</header>
+	<pol-aside aside='pandect'></pol-aside>
+	<pol-list></pol-list>
+</polling>

@@ -1,0 +1,244 @@
+(function(angular) {
+
+	var directives = angular.module('app.directives', []);
+
+	directives
+	.directive('polFrame', function(){
+		return {
+			restrict: 'E', 
+			templateUrl: basepath + '/cms/pollingFrame.from',
+			replace: true,
+			link: function(scope, element, attrs){
+				element.css({
+					width: $(window).width() - 40,
+					height: $(window).height() - 40
+				});
+			}
+		};
+	})
+
+	.directive('polAside', function(){
+		return {
+			restrict: 'EA', 
+			templateUrl: basepath + '/cms/pollingAside.from',
+			replace: true,
+			scope: {
+				aside: '=',
+				pandect: '=',
+				resetscroll: '&',
+				resetfilt: '&'
+			},
+			link: function(scope, element, attrs){
+				element.css({
+					height: $(window).height() - 40 - 42
+				});
+				customFunc();
+			}
+		};
+	})
+	
+	.directive('cmslist', function($timeout){
+		return {
+			link: function(scope, element, attrs){
+				element.css('opacity', 0);
+				$timeout(function(){
+					element.css({
+						height: $(window).height() - 40 - 42 - $('pollist > header').height(),
+						'opacity': 1
+					});
+					customFunc();
+				},100);
+			}
+		};
+	})
+
+	.directive('pollist', function($timeout){
+		return {
+			link: function(scope, element, attrs){
+				element.css('opacity', 0);
+				$timeout(function(){
+					element.css({
+						width: $('polling').outerWidth(true) - $('polaside').outerWidth(true) - 2 * (parseInt($('polling').css('margin-left')) + 1),
+						height: $(window).height() - 40 - 42,
+						'opacity': 1
+					});
+				},100);
+			}
+		};
+	})
+	
+	.directive('listArea', function(){
+		return {
+			restrict: 'E', 
+			templateUrl: basepath + '/cms/polArea.from',
+			replace: true,
+			link: function(scope, element, attrs){
+				
+			}
+		};
+	})
+	
+	.directive('setstop', function(){
+		return {
+			restrict: 'A', 
+			link: function(scope, element, attrs){
+				element.bind({
+					'mouseover': function(){
+						element.attr('stop', 'true');
+					},
+					'mouseleave': function(){
+						element.attr('stop', 'false');
+					}
+				});
+			}
+		};
+	})
+	
+	.directive('eventstop', function(){
+		return {
+			restrict: 'A', 
+			link: function(scope, element, attrs){
+				element.bind({
+					'mouseover': function(event){
+						event.stopPropagation()
+					},
+					'mouseleave': function(event){
+						event.stopPropagation()
+					}
+				});
+			}
+		};
+	})
+	
+	.directive('listheader', function($timeout){
+		return {
+			link: function(scope, element, attrs){
+				element.css('opacity', 0);
+				$timeout(function(){
+					element.css({
+						width: $('pollist').outerWidth(true) - 32,
+						'opacity': 1
+					});
+				},100);
+			}
+		};
+	})
+	
+	.directive('listarea', function($timeout){
+		return {
+			link: function(scope, element, attrs){
+				element.css('opacity', 0);
+				$timeout(function(){
+					element.css({
+						width: $('pollist').outerWidth(true) - 16,
+						'opacity': 1
+					});
+				},100);
+			}
+		};
+	})
+	
+	.directive('devtpl', function($timeout){
+		return {
+			link: function(scope, element, attrs){
+				element.css('opacity', 0);
+				$timeout(function(){
+					element.css({
+						width: ($('listarea').outerWidth(true) - 8 * 5) / 4 - 3,
+						'opacity': 1
+					});
+					customFunc();
+				},100);
+			}
+		};
+	})
+	
+	.directive('poCompile', function(){
+		return {
+			restrict: 'E', 
+			templateUrl: basepath + '/cms/poCompile.from',
+			replace: true,
+			link: function(scope, element, attrs){
+				
+			}
+		};
+	})
+	
+	.directive('poEdit', function(){
+		return {
+			restrict: 'E', 
+			templateUrl: basepath + '/cms/poEdit.from',
+			replace: true,
+			link: function(scope, element, attrs){
+				
+			}
+		};
+	})
+	
+	.directive('editTpl', function(){
+		return {
+			restrict: 'E', 
+			templateUrl: basepath + '/cms/poEditTpl.from',
+			replace: true,
+			link: function(scope, element, attrs){
+				
+			}
+		};
+	})
+	
+	.directive('poTpl', function(){
+		return {
+			restrict: 'E', 
+			templateUrl: basepath + '/cms/poTpl.from',
+			replace: true,
+			link: function(scope, element, attrs){
+				
+			}
+		};
+	})
+	
+	.directive('poList', function(){
+		return {
+			restrict: 'E', 
+			templateUrl: basepath + '/cms/poList.from',
+			replace: true,
+			link: function(scope, element, attrs){
+				
+			}
+		};
+	})
+	
+	.directive('poModel', function(){
+		return {
+			restrict: 'E', 
+			templateUrl: basepath + '/cms/poModel.from',
+			replace: true,
+			link: function(scope, element, attrs){
+				
+			}
+		};
+	})
+	
+	.directive('poManage', function(){
+		return {
+			restrict: 'E', 
+			templateUrl: basepath + '/cms/poManage.from',
+			replace: true,
+			link: function(scope, element, attrs){
+				
+			}
+		};
+	})
+	
+	.directive('lastSend', function(){
+		return {
+			restrict: 'E', 
+			templateUrl: basepath + '/cms/poLastSend.from',
+			replace: true,
+			link: function(scope, element, attrs){
+				
+			}
+		};
+	})
+
+})(angular);

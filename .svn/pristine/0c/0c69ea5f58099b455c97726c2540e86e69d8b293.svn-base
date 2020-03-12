@@ -1,0 +1,124 @@
+package com.boco.controller;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.boco.domain.JkptBaseOrgRoad;
+import com.boco.domain.JkptBaseRoad;
+import com.boco.domain.JkptCommParamDic;
+import com.boco.domain.forebean.SearchConditionBean;
+import com.boco.service.CmsService;
+import com.boco.service.CommonService;
+
+@Controller
+@RequestMapping("/cms")
+public class CMSController {
+	@Resource(name="commonService")
+	private CommonService commonService;
+	
+	@Resource(name="cmsService")
+	private CmsService cmsService;
+	
+	@RequestMapping("/edit")
+	public String edit(){
+		return "Cms/CmsEdit";
+	}
+	
+	@RequestMapping("/browse")
+	public String browse(){
+		return "Cms/CmsBrowse";
+	}
+	
+	@RequestMapping("/socket")
+	public String socket(){
+		return "Websocket";
+	}
+	
+	@RequestMapping("/configuration")
+	public String Configuration(){
+		return "Configuration/configuration";
+	}
+	
+	@RequestMapping("/polling")
+	public String Polling(HttpServletRequest request) throws Exception{		
+		return "Polling/polling";
+	}
+	
+	/**
+	 * 获取过滤条件信息
+	 * @return
+	 */
+	@RequestMapping(value="/getSearchCondition",method=RequestMethod.POST)
+	public @ResponseBody SearchConditionBean getSearchCondition(
+			HttpSession session) {
+		SearchConditionBean bean = new SearchConditionBean();
+
+		// 加入登录后，机构编号从session中的用户信息中获取
+		int orgid = 20300;
+		try {
+			// 路线信息
+			List<JkptBaseRoad> routeLinesList = commonService
+					.getRouteLinesInfoByOrgid(orgid, 0);
+			bean.setRouteLinesList(routeLinesList);
+			// 路段信息
+			List<JkptBaseOrgRoad> roadInfoList = commonService
+					.getRoadInfoByOrgid(orgid, 0);
+			bean.setRoadInfoList(roadInfoList);
+			// 位置
+			List<JkptCommParamDic> devicePositionList = commonService
+					.getDicByGroupType("DevicePosition", 0);
+			bean.setDevicePositionList(devicePositionList);
+			// 方向
+			List<JkptCommParamDic> deviceDirectList = commonService
+					.getDicByGroupType("DeviceDirect", 0);
+			bean.setDeviceDirectList(deviceDirectList);
+			// 情报板类型
+			List<JkptCommParamDic> cmsTypeList = commonService
+					.getDicByGroupType("CmsType", 0);
+			bean.setCmsTypeList(cmsTypeList);
+			// 情报板尺寸
+			List<JkptCommParamDic> cmsSizeList = commonService
+					.getDicByGroupType("CmsSize", 0);
+			bean.setCmsSizeList(cmsSizeList);
+			
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return bean;
+	}
+	
+	
+	/* ↓↓↓↓ angular用模板 ↓↓↓↓ */
+	@RequestMapping("/tbrowse")
+	public String Tbrowse(){
+		return "Cms/template/browse";
+	}
+
+	@RequestMapping("/tedit")
+	public String Tedit(){
+		return "Cms/template/addEdit";
+	}
+
+	@RequestMapping("/cmsTpl")
+	public String CmsTpl(){
+		return "Cms/template/cmsTpl";
+	}
+
+	@RequestMapping("/cmsEdit")
+	public String CmsEdit(){
+		return "Cms/template/cmsEdit";
+	}
+
+	@RequestMapping("/eagle")
+	public String Eagle(){
+		return "Configuration/template/eagle";
+	}
+}

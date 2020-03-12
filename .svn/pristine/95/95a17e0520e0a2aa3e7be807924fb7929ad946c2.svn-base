@@ -1,0 +1,17 @@
+<%@ page pageEncoding="UTF-8"%>
+<multitxta>
+    <btns>
+        <select></select>
+        <i></i>
+        <i></i>
+        <i></i>
+        <i></i>
+        <i></i>
+        <i></i>
+        <i></i>
+        <i></i>
+        <select></select>
+        <i></i>
+    </btns>
+    <textarea></textarea>
+</multitxta>

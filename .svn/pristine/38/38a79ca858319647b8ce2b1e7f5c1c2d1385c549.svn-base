@@ -1,0 +1,16 @@
+<%@ page pageEncoding="UTF-8"%>
+<cmwindow>
+	<img src='${pageContext.request.contextPath}/static/Configuration/images/map.png' class='cmap'>
+	<cmap>
+		<div ng-repeat='device in cmsBasicInf.cms' ng-style='device | deviceStyle' ng-click='showCmsInfo(device)' cmsposi></div>
+	</cmap>
+	<eagle>
+		<eawindow></eawindow>
+		<bgctrl></bgctrl>
+	</eagle>
+	<template compile></template>
+	<template list></template>
+	<template model></template>
+	<template manage></template>
+	<configbtn ng-click='cmsPosition=!cmsPosition'>组态</configbtn>
+</cmwindow>

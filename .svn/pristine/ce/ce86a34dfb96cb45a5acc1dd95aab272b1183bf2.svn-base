@@ -1,0 +1,26 @@
+<%@ page pageEncoding="UTF-8"%>
+<cmscompile>
+	<header>
+		<span></span>
+		<i>×</i>
+	</header>
+	<cms-tpl></cms-tpl>
+	<info>
+		<ul>
+			<li>所处位置：</li>
+			<li>运行状态：</li>
+			<li>发布时间：</li>
+		</ul>
+		<btns>
+			<p>添加</p>
+			<p>修改</p>
+			<p>删除</p>
+		</btns>
+	</info>
+	<multi-txta></multi-txta>
+	<footer>
+		<p>发布</p>
+		<p>追加情报板</p>
+		<p>使用模板</p>
+	</footer>
+</cmscompile>

@@ -1,0 +1,33 @@
+<div class='sw-charts' customattr='scroll'>
+	<div class='for-chart_wrap' custombody='normal'>
+		<section charts-wrap ng-repeat='chart in data track by $index'>
+			<header>
+				<span>{{chart.name}}</span>
+				<a href="">详细</a>
+			</header>
+			<div class='d-chart' id='{{chart.chartid}}'></div>
+			<ul>
+				<li>
+					<p>位置</p>
+					<p><span>{{chart.position}}</span></p>
+				</li>
+				<li>
+					<p>状态</p>
+					<p><i ng-style='chart.type'></i><span>{{chart.status}}</span></p>
+				</li>
+				<li>
+					<p>能见度</p>
+					<p><span>{{chart.visibility}}</span></p>
+				</li>
+				<li>
+					<p>风速</p>
+					<p><span>{{chart.windspeed}}</span></p>
+				</li>
+				<li>
+					<p>降雨量</p>
+					<p><span>{{chart.rainfall}}</span></p>
+				</li>
+			</ul>
+		</section>
+	</div>
+</div>

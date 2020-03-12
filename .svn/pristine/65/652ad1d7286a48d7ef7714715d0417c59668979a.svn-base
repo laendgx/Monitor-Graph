@@ -1,0 +1,19 @@
+<script type="text/javascript"
+		src="${pageContext.request.contextPath }/static/CommonJS/jquery/jquery-3.2.1.min.js"></script>
+<script type="text/javascript"
+		src="${pageContext.request.contextPath }/static/CommonJS/AngularJs/AngularJs-1.6.4.min.js"></script>
+<script type="text/javascript"
+		src="${pageContext.request.contextPath }/static/CommonAg/CommonServices.js"></script>
+<script type="text/javascript"
+		src="${pageContext.request.contextPath }/static/CommonJS/DateProtoType.js"></script>
+<script type="text/javascript"
+		src="${pageContext.request.contextPath }/static/CommonJS/InframeReset.js"></script>
+<script type="text/javascript" 
+		src="${pageContext.request.contextPath }/static/CommonJS/laydate/laydate.dev.js"></script>
+<script type="text/javascript"
+		src="${pageContext.request.contextPath }/static/CommonJS/tools.js"></script>
+<script type="text/javascript"
+		src="${pageContext.request.contextPath }/static/CommonJS/scroll.js"></script>
+<script type="text/javascript"
+		src="${pageContext.request.contextPath }/static/CommonJS/commonControl.js"></script>
+

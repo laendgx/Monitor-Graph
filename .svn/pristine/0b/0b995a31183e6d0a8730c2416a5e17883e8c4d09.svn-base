@@ -1,0 +1,2 @@
+#<!--采集软件服务socketio地址-->
+collSocketIoAddr=10.11.1.33:9092

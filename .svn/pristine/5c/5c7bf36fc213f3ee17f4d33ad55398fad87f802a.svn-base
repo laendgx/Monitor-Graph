@@ -1,0 +1,174 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <base href="<%=basePath%>">
+    
+    <title>My JSP 'Wosocket.jsp' starting page</title>
+    
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+	<script type="text/javascript" src="${pageContext.request.contextPath }/static/CommonJS/jquery/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/static/CommonJS/socket.io/socket.io.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/static/CommonJS/socket.io/moment.min.js"></script>
+	<style type="text/css">
+		#console {
+			height: 400px;
+			overflow: auto;
+		}
+		.username-msg {color:orange;}
+		.connect-msg {color:green;}
+		.disconnect-msg {color:red;}
+		.send-msg {color:#888}
+	</style>
+	<script type="text/javascript">
+		var cmsDeviceVarMap = {};
+		var socket; 
+		var basePath = "${pageContext.request.contextPath}"
+		
+		$(function(){
+			//读取设备变量信息
+			getDeviceVarValueInfos();
+			
+			socket = io.connect("http://127.0.0.1:9092")
+			
+			socket.on("connect", function(){
+				output('<span class="connect-msg">Client has connected to the server!</span>');
+			});
+			
+			socket.on("disconnect", function(){
+				output('<span class="disconnect-msg">The client has disconnected!</span>');
+			});
+			
+			//数据
+			socket.on("uploaddataEvent", function(data){
+				output('<span class="username-msg">'  + ':</span> ' + data);
+				updateDeviceVarValue(data);
+			});
+			
+			//告警
+			socket.on("alertinfoEvent", function(data){
+				output('<span class="username-msg">'  + ':</span> ' + data);		
+			});
+				
+			//发送标志
+			socket.on("sendflagEvent", function(data){
+				output('<span class="username-msg">'  + ':</span> ' + data);
+			});
+		});
+		
+		
+		//控制亮度
+		function issuedCmsBright(){
+			var msgcontentArr = [];
+			var msgcontentjson = {};
+			msgcontentjson.collnode = 1;
+			msgcontentjson.orgid = 20300;
+			msgcontentjson.deviceid = 22210009;
+			msgcontentjson.devicevarid = 100012;
+			msgcontentjson.devicetypeid = 222112;
+			msgcontentjson.sendcontents = "30";
+			msgcontentArr.push(msgcontentjson);
+			
+			var msgjson = {};
+			msgjson.msgtype = "devicectl";
+			msgjson.msgcontent = JSON.stringify(msgcontentArr);
+			var str = JSON.stringify(msgjson);
+			socket.emit("controlevent",str);
+		}
+		
+		function sendclick(){
+			IssuedCmsPlayList();			
+		}
+		
+		//下发播放列表
+		function IssuedCmsPlayList(){
+			var msgcontent = "[{\"displayWidth\":120,\"displayHeight\":10,\"dispScrType\":1,\"timeDelay\":12,\"transition\":3,\"param\":23,\"graphList\":[{\"graphXXX\":1,\"graphYYY\":2,\"graphId\":\"A21\"},{\"graphXXX\":2,\"graphYYY\":2,\"graphId\":\"A22\"}],\"wordList\":[{\"wordXXX\":2,\"wordYYY\":3,\"fontColor\":\"FF00FF\",\"fontBackColor\":\"00FF00\",\"fontShadowColor\":\"000000\",\"wordSpace\":12,\"fontSize_HH\":32,\"fontSize_WW\":32,\"wordContent\":\"小心驾驶\"},{\"wordXXX\":1,\"wordYYY\":3,\"fontColor\":\"FF00FF\",\"fontBackColor\":\"00FF00\",\"fontShadowColor\":\"000000\",\"wordSpace\":12,\"fontSize_HH\":32,\"fontSize_WW\":32,\"wordContent\":\"安全回家\"}]}]";
+			
+			var msgcontentArr = [];
+			var msgcontentjson = {};
+			msgcontentjson.collnode = 1;
+			msgcontentjson.orgid = 20300;
+			msgcontentjson.deviceid = 22210009;
+			msgcontentjson.devicevarid = 100001;
+			msgcontentjson.devicetypeid = 222101;
+			msgcontentjson.sendcontents = msgcontent;
+			msgcontentArr.push(msgcontentjson);
+			
+			var msgjson = {};
+			msgjson.msgtype = "devicectl";
+			msgjson.msgcontent = JSON.stringify(msgcontentArr);
+			var str = JSON.stringify(msgjson);
+			socket.emit("controlevent",str);
+		}
+			
+		
+		function output(message) {
+            var currentTime = "<span class='time'>" +  moment().format('HH:mm:ss.SSS') + "</span>";
+            var element = $("<div>" + currentTime + " " + message + "</div>");
+			$('#console').prepend(element);
+		}
+		
+		
+		//获取设备的采集变量信息
+		function getDeviceVarValueInfos(){
+			var url = basePath + "/cms/getCmsDeviceVarValueInfos.from?ran=" + Math.random();
+			var json = {};
+			$.ajax( {
+				type : "POST",
+				contentType : "application/json; charset=utf-8",//"application/x-www-form-urlencoded; charset=utf-8",
+				url : url,
+				dataType : "json",
+				async: false,
+				data : JSON.stringify(json),
+				success : function(data) {
+					createCmsDeviceVarMap(data);					
+				}
+			});
+		}
+		
+		//生成设备变量Map
+		function createCmsDeviceVarMap(data){
+			cmsDeviceVarMap = {};
+			for(var obj in data){
+				var key = data[obj].orgId + "" + data[obj].deviceId + "" + data[obj].deviceVarId;
+ 				cmsDeviceVarMap[key] = data[obj];
+			}
+		} 
+		
+		//更新设备变量的数据
+		function updateDeviceVarValue(data){
+			var obj = eval('(' + data + ')');
+            if (obj.msgtype == "uploaddata"){            	
+                if (obj.datalist != null){
+                    for(var i = 0; i < obj.datalist.length; i++){
+                        var varvalue = obj.datalist[i];
+                        var key = varvalue.orgid + "" + varvalue.deviceid + "" +  varvalue.deivcevarid;
+                        if (cmsDeviceVarMap.hasOwnProperty(key)){
+                        	var value = cmsDeviceVarMap[key];
+                        	value.varValue = varvalue.devicevarvalue;
+                        	value.varValueDesc = varvalue.deviceVarValueDesc;
+                        }                      
+                    }
+                }            	
+            }
+		}
+		
+	</script>
+  </head>
+  
+  <body>
+  	<button onclick="sendclick();">发送消息</button>
+    This is my JSP page. <br>
+    <div id="console" class="well">
+	</div>
+  </body>
+</html>

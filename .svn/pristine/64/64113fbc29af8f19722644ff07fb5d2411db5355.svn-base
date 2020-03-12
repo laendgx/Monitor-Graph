@@ -1,0 +1,30 @@
+<%@ page pageEncoding="UTF-8"%>
+<pollist>
+	<header>
+		<pandect>
+			<p>总数：<span>{{cmsBasicInf.length}}</span>个</p>
+			<p>选中：<span></span>个</p>
+		</pandect>
+		<checkall>
+			<input type='checkbox' id='checkall'>
+			<label for='checkall'>全选</label>
+		</checkall>
+		<polsearch>
+			<input type="text">
+			<i></i>
+		</polsearch>
+		<polbtns>
+			<div>删除节目单</div>
+			<div>插播节目单</div>
+			<div>标准显示</div>
+		</polbtns>
+		<morebtns>
+			<i></i>
+		</morebtns>
+	</header>
+	<cmslist>
+		<cmsscroll>
+			<list-area ng-repeat='cbi in cmsBasicInf' pollists='cbi'></list-area>
+		</cmsscroll>
+	</cmslist>
+</pollist>

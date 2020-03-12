@@ -1,0 +1,36 @@
+package com.boco.service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.boco.dao.DaoSupport;
+import com.boco.domain.JkptTxxtDeviceCms;
+/**
+ * 可变情报板服务类
+ * @author 孙冠义
+ *
+ */
+@Service("cmsService")
+public class CmsService {
+	@Resource(name="daoSupport")
+	private DaoSupport dao;
+	
+	/**
+	 * 获取指定机构的可变情报板详细信息
+	 * @param orgid
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<JkptTxxtDeviceCms> getCmsBasicInfos(Integer orgid) throws Exception{
+		Map<String,Integer> map = new HashMap<String,Integer>();
+		map.put("orgid", orgid);
+		
+		List<JkptTxxtDeviceCms> list = (List<JkptTxxtDeviceCms>) dao.findForList("CmsMapper.getCmsBasicInfos", map);
+		return list;
+	}
+}

@@ -1,0 +1,70 @@
+package com.boco.controller;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.boco.domain.JkptBaseUser;
+import com.boco.domain.comm.CommResult;
+import com.boco.domain.comm.JkptTxxtAlertDictionary;
+import com.boco.domain.login.CenterQuestParam;
+import com.boco.service.AlertService;
+import com.boco.utils.ConfigReaderUtils;
+
+@RequestMapping("/alert")
+@Controller
+public class AlertController {
+	@Resource(name="alertService")	
+	private AlertService alertService;
+	/**
+	 * 采集端socketio服务端地址
+	 */
+	private String collSocketIoAddr = ConfigReaderUtils.getCollSocketIoAddr();
+	/**
+	 * js版本号
+	 */
+	private String jsVersion = ConfigReaderUtils.getJsVersion();
+	
+	@RequestMapping("/toIndex")
+	public String toIndex(CenterQuestParam param,ModelMap model, HttpSession session){
+		String userId = "";
+		if (param == null || param.getUserId() == null){
+			try{
+				JkptBaseUser user = (JkptBaseUser) session.getAttribute("admin");
+				userId = user.getUserId();
+			} catch(Exception e){
+				e.printStackTrace();
+			}
+		} else {
+			userId = param.getUserId();
+		}
+		model.addAttribute("userId", userId);
+		model.addAttribute("collSocketIoAddr", collSocketIoAddr);
+		model.addAttribute("jsVersion", jsVersion);
+		return "Alert/Home";
+	}
+	
+	/**
+	 * 获取所有的告警字典
+	 * @return
+	 */
+	@RequestMapping("/getAllAlertDictionarys")
+	public @ResponseBody CommResult<List<JkptTxxtAlertDictionary>> getAllAlertDictionarys(){
+		CommResult<List<JkptTxxtAlertDictionary>> result = new CommResult<List<JkptTxxtAlertDictionary>>();
+		try{
+			List<JkptTxxtAlertDictionary> list = alertService.getAllAlertDictionary();
+			result.setResultData(list);
+			result.setResultCode("100");
+		}catch(Exception e){
+			e.printStackTrace();
+			result.setResultCode("101");
+		}
+		return result;
+	}
+}

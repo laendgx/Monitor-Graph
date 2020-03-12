@@ -1,0 +1,58 @@
+<%@ page pageEncoding="UTF-8"%>
+<modelmanage ng-show='modelManage' ng-hide='!modelManage'>
+	<header>
+		<span>情报板</span>
+		<i ng-click='modelManage=false'>×</i>
+	</header>
+	<btns>
+		<filbtn>
+			<input type='radio' name='model'>
+			<p>天气提醒</p>
+		</filbtn>
+		<filbtn>
+			<input type='radio' name='model'>
+			<p>天气提醒</p>
+		</filbtn>
+		<filbtn>
+			<input type='radio' name='model'>
+			<p>天气提醒</p>
+		</filbtn>
+		<filbtn>
+			<input type='radio' name='model'>
+			<p>天气提醒</p>
+		</filbtn>
+		<modsearch>
+			<input type="text">
+			<i></i>
+		</modsearch>
+	</btns>
+	<modellist>
+		<header>天气提醒
+			<p>添加节目单</p>
+		</header>
+		<div class="table">
+			<table>
+				<thead>
+					<tr>
+						<th>序号</th>
+						<th>节目单内容</th>
+						<th>门架(320×32)</th>
+						<th>F板(192×96)</th>
+						<th>F板(128×64)</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>1</td>
+						<td>1</td>
+						<td>使用</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</modellist>
+	<modelview>
+		
+	</modelview>
+</modelmanage>

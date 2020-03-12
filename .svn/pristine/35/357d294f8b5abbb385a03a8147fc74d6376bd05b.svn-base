@@ -1,0 +1,69 @@
+@charset "utf-8";
+html {
+	width: 100%;
+	height: 100%;
+}
+body {
+	height: 100%;
+}
+
+cmwindow {
+	position: relative;
+	display: block;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+cmwindow .cmap,
+cmwindow cmap {
+	position: absolute;
+	display: block;
+	top: 0;
+	left: 0;
+}
+
+cmwindow cmap {
+	z-index: 11;
+}
+
+cmwindow eagle {
+	display: block;
+	position: fixed;
+	border: 1px solid #000;
+	box-shadow: 0 0 1px #fff;
+	top: 0px;
+	right: 0px;
+	z-index: 21;
+	overflow: hidden;
+}
+
+cmwindow eagle eawindow {
+	display: block;
+	position: absolute;
+	border-color: rgba(0,0,0,.2);
+	border-style: solid;
+	border-width: 320px;
+	top: -320px;
+	left: -320px;
+	cursor: pointer;
+}
+
+cmwindow bgctrl {
+	position: absolute;
+	display: block;
+	z-index: 41;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+cmscompile {
+	position: absolute;
+	display: block;
+	width: 590px;
+	height: 36px;
+	box-sizing: border-box;
+	
+}

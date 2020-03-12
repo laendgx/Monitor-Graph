@@ -1,0 +1,152 @@
+(function(angular) {
+
+	var directives = angular.module('app.directives', []);
+
+	directives
+	.directive('polFrame', function(){
+		return {
+			restrict: 'E', 
+			templateUrl: basepath + '/cms/pollingFrame.from',
+			replace: true,
+			link: function(scope, element, attrs){
+				element.css({
+					width: $(window).width() - 20,
+					height: $(window).height() - 20
+				});
+			}
+		};
+	})
+
+	.directive('polAside', function(){
+		return {
+			restrict: 'EA', 
+			templateUrl: basepath + '/cms/pollingAside.from',
+			replace: true,
+			scope: {
+				aside: '=',
+				pandect: '=',
+				resetscroll: '&',
+				resetfilt: '&'
+			},
+			link: function(scope, element, attrs){
+				element.css({
+					height: $(window).height() - 20 - 42
+				});
+				customFunc();
+			}
+		};
+	})
+	
+	.directive('cmslist', function($timeout){
+		return {
+			link: function(scope, element, attrs){
+				$timeout(function(){
+					element.css({
+						height: $(window).height() - 20 - 42 - $('pollist > header').height()
+					});
+					customFunc();
+				},20);
+			}
+		};
+	})
+
+	.directive('pollist', function($timeout){
+		return {
+			link: function(scope, element, attrs){
+				$timeout(function(){
+					element.css({
+						width: $('polling').outerWidth(true) - $('polaside').outerWidth(true) - 2 * (parseInt($('polling').css('margin-left')) + 1),
+						height: $(window).height() - 20 - 42
+					});
+				},20);
+			}
+		};
+	})
+	
+	.directive('listArea', function(){
+		return {
+			restrict: 'E', 
+			templateUrl: basepath + '/cms/polArea.from',
+			replace: true,
+			scope: {
+				pollists: '=',
+				road: '=',
+				ich: '&',
+				deviceshow: '&'
+			},
+			link: function(scope, element, attrs){
+				
+			}
+		};
+	})
+	
+	.directive('setstop', function(){
+		return {
+			restrict: 'A', 
+			link: function(scope, element, attrs){
+				element.bind({
+					'mouseover': function(){
+						element.attr('stop', 'true');
+					},
+					'mouseleave': function(){
+						element.attr('stop', 'false');
+					}
+				});
+			}
+		};
+	})
+	
+	.directive('eventstop', function(){
+		return {
+			restrict: 'A', 
+			link: function(scope, element, attrs){
+				element.bind({
+					'mouseover': function(event){
+						event.stopPropagation()
+					},
+					'mouseleave': function(event){
+						event.stopPropagation()
+					}
+				});
+			}
+		};
+	})
+	
+	.directive('listheader', function($timeout){
+		return {
+			link: function(scope, element, attrs){
+				$timeout(function(){
+					element.css({
+						width: $('pollist').outerWidth(true) - 32
+					});
+				},20);
+			}
+		};
+	})
+	
+	.directive('listarea', function($timeout){
+		return {
+			link: function(scope, element, attrs){
+				$timeout(function(){
+					element.css({
+						width: $('pollist').outerWidth(true) - 16
+					});
+				},20);
+			}
+		};
+	})
+	
+	.directive('devtpl', function($timeout){
+		return {
+			link: function(scope, element, attrs){
+				$timeout(function(){
+					element.css({
+						width: ($('listarea').outerWidth(true) - 8 * 5) / 4 - 3
+					});
+					customFunc();
+				},20);
+			}
+		};
+	})
+
+})(angular);

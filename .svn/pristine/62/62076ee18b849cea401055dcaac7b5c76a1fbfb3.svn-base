@@ -1,0 +1,45 @@
+<%@ page pageEncoding="UTF-8"%>
+<polling>
+	<header>
+		<span>情报板管理</span>
+	</header>
+	<pol-aside></pol-aside>
+	<pollist pollist>
+		<header>
+			<pandect>
+				<p>总数：<span>{{cmsCount}}</span>个</p>
+				<!-- <p>选中：<span>{{cmsChecked.length}}</span>个</p> -->
+			</pandect>
+			<!-- <checkall>
+				<input type='checkbox' id='checkall'>
+				<label for='checkall'>全选</label>
+			</checkall> -->
+			<!-- <polsearch>
+				<input type="text">
+				<i></i>
+			</polsearch> -->
+			<!-- <polbtns>
+				<div class='green'>删除节目单</div>
+				<div class='blue'>插播节目单</div>
+				<div class='green'>标准显示</div>
+			</polbtns> -->
+			<morebtns>
+				<i ng-click='modelManageFn()' ng-mouseover='moover()' ng-mouseleave='moout()'></i>
+				<div ng-show='resfl' ng-hide='!resfl' ng-click='resfn()' class='resstyle'>异常显示修复</div>
+				<div ng-show='resfl' ng-hide='!resfl' ng-click='resColorfn()' class='resstyle' style='top: 80px'>异常顏色修复</div>
+			</morebtns>
+		</header>
+		<cmslist customAttr='scroll' cmslist>
+			<cmsscroll custombody='normal'>
+				<last-send></last-send>
+				<list-area ng-repeat='cbi in cmsBasicInf'></list-area>
+			</cmsscroll>
+		</cmslist>
+	</pollist>
+	<po-compile></po-compile>
+	<po-list></po-list>
+	<po-model></po-model>
+	<po-manage></po-manage>
+	<model-edit></model-edit>
+	<po-details></po-details>
+</polling>

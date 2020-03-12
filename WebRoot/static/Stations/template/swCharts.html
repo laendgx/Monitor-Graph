@@ -1,0 +1,33 @@
+<div class='sw-charts' customattr='scroll'>
+	<div class='for-chart_wrap' custombody='normal'>
+		<section charts-wrap ng-repeat='chart in data track by $index'>
+			<header>
+				<span>{{chart.name}}</span>
+				<a href="">详细</a>
+			</header>
+			<div class='d-chart' id='{{chart.chartid}}'></div>
+			<ul>
+				<li>
+					<p>位置</p>
+					<p><span>{{chart.position}}</span></p>
+				</li>
+				<li>
+					<p>状态</p>
+					<p><i ng-style='chart.type'></i><span>{{chart.status}}</span></p>
+				</li>
+				<li>
+					<p>车流量</p>
+					<p><span>{{chart.flow}}</span></p>
+				</li>
+				<li>
+					<p>占有率</p>
+					<p><span>{{chart.perc}}</span></p>
+				</li>
+				<li>
+					<p>平均车速</p>
+					<p><span>{{chart.speed}}</span></p>
+				</li>
+			</ul>
+		</section>
+	</div>
+</div>

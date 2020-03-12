@@ -1,0 +1,8 @@
+#<!--采集软件服务socketio地址-->
+collSocketIoAddr=10.11.1.33\:9092
+#<!--可变情报板图标的相对地址-->
+cmsIconRelativeAddr=static/Images/icon/
+#<!--js版本-->
+jsVersion=20171123
+#<!--js版本-->
+defaultUrl=/cms/configuration.from

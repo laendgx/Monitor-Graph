@@ -1,0 +1,3 @@
+<header class='con-head'>
+	<i ng-click='fn()'></i>
+</header>

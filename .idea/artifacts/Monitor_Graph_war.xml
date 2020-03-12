@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="Monitor-Graph:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>Monitor-Graph</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="jlgcstat.war">
+      <element id="artifact" artifact-name="Monitor-Graph:war exploded" />
+    </root>
+  </artifact>
+</component>

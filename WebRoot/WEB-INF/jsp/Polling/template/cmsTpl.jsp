@@ -1,0 +1,16 @@
+<%@ page pageEncoding="UTF-8"%>
+<browse ng-show='cmsTpl' ng-hide='!cmsTpl'>
+	<preview setstop count=0>
+        <cwrap ng-style='cmsInfo.cmsSizeDesc | cmsStyle' class='ctpl'>
+            <cms>
+            	<pwrap ng-repeat='index in cmsInfo.deviceVar[cmsInfo.issuedTypeId].deviceVarValue track by $index' count='{{$index}}' cpp>
+                    <picon ng-style='index.graphList | showIcon:cmsInfo.cmsSizeDesc:iconsAddr'></picon>
+            		<p ng-repeat='tabp in index.wordList' ng-style='tabp | pStyle'>{{tabp.wordContent}}</p>
+            	</pwrap>
+            </cms>
+        </cwrap>
+    </preview>
+    <cnav tips>
+    	<p ng-repeat='index in cmsInfo.deviceVar[cmsInfo.issuedTypeId].deviceVarValue track by $index' tip='{{$index}}' type='edit'>{{$index + 1}}</p>
+    </cnav>
+</browse>

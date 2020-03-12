@@ -1,0 +1,41 @@
+package com.boco.utils;
+
+import java.io.InputStreamReader;
+import java.util.Properties;
+
+public class ConfigReaderUtils {
+	/**
+	 * 采集系统的socketio Server地址
+	 */
+	private static String collSocketIoAddr;
+	/**
+	 * 可变情报板图标的相对地址
+	 */
+	private static String cmsIconRelativeAddr;
+	
+	static{
+		try{
+		Properties prop = new Properties();
+		prop.load(new InputStreamReader(ConfigReaderUtils.class.getClassLoader().getResourceAsStream("moni-config.properties"), "UTF-8"));
+		collSocketIoAddr = prop.getProperty("collSocketIoAddr");
+		cmsIconRelativeAddr = prop.getProperty("cmsIconRelativeAddr");
+		} catch(Exception ex){
+			ex.printStackTrace();
+		}
+	}
+
+	/**
+	 * @return the 采集系统的socketioServer地址
+	 */
+	public static String getCollSocketIoAddr() {
+		return collSocketIoAddr;
+	}
+
+	/**
+	 * @return the 可变情报板图标的相对地址
+	 */
+	public static String getCmsIconRelativeAddr() {
+		return cmsIconRelativeAddr;
+	}	
+	
+}

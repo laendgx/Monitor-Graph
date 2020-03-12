@@ -1,0 +1,59 @@
+package com.boco.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/cms")
+public class CMSController {
+	
+	@RequestMapping("/edit")
+	public String edit(){
+		return "Cms/CmsEdit";
+	}
+	
+	@RequestMapping("/browse")
+	public String browse(){
+		return "Cms/CmsBrowse";
+	}
+	
+	@RequestMapping("/socket")
+	public String socket(){
+		return "Websocket";
+	}
+	
+	@RequestMapping("/configuration")
+	public String Configuration(){
+		return "Configuration/configuration";
+	}
+	
+	@RequestMapping("/polling")
+	public String Polling(){
+		return "Polling/polling";
+	}
+	/* ↓↓↓↓ angular用模板 ↓↓↓↓ */
+	@RequestMapping("/tbrowse")
+	public String Tbrowse(){
+		return "Cms/template/browse";
+	}
+
+	@RequestMapping("/tedit")
+	public String Tedit(){
+		return "Cms/template/addEdit";
+	}
+
+	@RequestMapping("/cmsTpl")
+	public String CmsTpl(){
+		return "Cms/template/cmsTpl";
+	}
+
+	@RequestMapping("/cmsEdit")
+	public String CmsEdit(){
+		return "Cms/template/cmsEdit";
+	}
+
+	@RequestMapping("/eagle")
+	public String Eagle(){
+		return "Configuration/template/eagle";
+	}
+}

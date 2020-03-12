@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="CmsMapper">	
+	<select id="getCmsBasicInfos" parameterType="java.util.Map" resultType="JkptTxxtDevice">
+		select t.*,
+       (select x.dicname from jkpt_comm_paramdic x where x.grouptype='CmsType' and x.dicvalue=t.cmstype) cmstypedesc,
+       (select y.dicname from jkpt_comm_paramdic y where y.grouptype='CmsSize' and y.dicvalue=t.cmssize) cmssizedesc,
+       (select z.dicname from jkpt_comm_paramdic z where z.grouptype='CmsColor' and z.dicvalue=t.cmscolor) cmscolordesc
+		from (select a.orgid,
+		       a.deviceid,
+		       a.deviceabb,
+		       a.devicetypeid,
+		       a.deviceattrid,
+		       a.devicename,
+		       a.devicepegno,
+		       a.deviceaddress,
+		       a.deviceposition,
+		       a.deviceprefadid,
+		       a.graphfileid,
+		       a.memo,
+		       a.screenx,
+		       a.roadid,
+		       a.screeny,
+		       a.symbolstyle,
+		       a.devicegroupid,
+		       a.isscreencopy,
+		       a.devicelayerid,
+		       a.vorgid,
+		       a.routelineid,
+		       a.devicedirect,
+		       (select b.orgname from jkpt_glxt_organization b where b.orgid=a.orgid) orgname,
+		       (select c.dicname from jkpt_comm_paramdic c where c.grouptype='DevicePosition' and c.dicvalue=a.deviceposition) devicepositiondesc,
+		       (select d.dicname from jkpt_comm_paramdic d where d.grouptype='DeviceDirect' and d.dicvalue=a.deviceposition) devicedirectdesc,
+		       (select e.roadname from jkpt_base_org_road e where e.roadid=a.roadid and e.orgid=a.orgid) roadname,
+		       (select f.roadname from jkpt_base_road f where f.routelineid = a.routelineid) routelinename,
+		       g.cmstype, g.cmssize, g.cmscolor
+		  from jkpt_txxt_device a, jkpt_txxt_cmsproperty g where g.orgid=a.orgid and g.deviceid=a.deviceid
+		  <if test="orgid != null">
+		  	and a.orgid = #{orgid, jdbcType=NUMERIC}
+		  </if>
+		   ) t
+		  
+	</select>
+	
+</mapper>

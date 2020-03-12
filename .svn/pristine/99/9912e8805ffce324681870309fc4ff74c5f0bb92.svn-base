@@ -1,0 +1,3 @@
+<header class='sw-header'>
+	<span>{{data}}</span>
+</header>

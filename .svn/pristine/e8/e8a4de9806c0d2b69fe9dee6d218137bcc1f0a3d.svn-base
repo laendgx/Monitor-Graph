@@ -1,0 +1,131 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <base href="<%=basePath%>">
+    
+    <title>My JSP 'Wosocket.jsp' starting page</title>
+    
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+	<script type="text/javascript" src="${pageContext.request.contextPath }/static/CommonJS/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/static/CommonJS/sockjs-0.3.min.js"></script>
+	
+	<script type="text/javascript">
+		var ws;
+		var basePath = "/Monitor-CollSvr";
+		
+		var WebSocketAddr = 'ws://10.11.1.10:8080/'+ basePath + "/webSocketServer.from";
+		/* var WebSocketAddr = 'ws://' + window.location.host + basePath + "/webSocketServer.from"; */
+		$(function(){
+			ws = new WebSocket(WebSocketAddr);
+		    
+			//websocket连接上触发事件
+		    ws.onopen = function () {        
+		    };
+		    
+		    //websocket收到消息事件
+		    ws.onmessage = function (event) {
+		        try{
+					alert(event.data);
+		        }catch(err){}
+		    };
+		    
+		    //websocket关闭事件
+		    ws.onclose = function (event) {
+		        
+		    };
+		});
+		
+		function sendclick(){
+			IssuedCmsPlayList();
+			
+		}
+		//控制亮度
+		function issuedCmsBright(){
+			var msgcontentArr = [];
+			var msgcontentjson = {};
+			msgcontentjson.collnode = 1;
+			msgcontentjson.orgid = 1010;
+			msgcontentjson.deviceid = 22220001;
+			msgcontentjson.devicevarid = 100012;
+			msgcontentjson.devicetypeid = 222212;
+			msgcontentjson.sendcontents = "30";
+			msgcontentArr.push(msgcontentjson);
+			
+			var msgjson = {};
+			msgjson.msgtype = "devicectl";
+			msgjson.msgcontent = JSON.stringify(msgcontentArr);
+			var str = JSON.stringify(msgjson);
+			ws.send(str);
+		}
+		
+		//下发播放列表
+		function IssuedCmsPlayList(){
+			var msgcontent = "[{\"displayWidth\":120,\"displayHeight\":10,\"dispScrType\":1,\"timeDelay\":12,\"transition\":3,\"param\":23,\"graphList\":[{\"graphXXX\":1,\"graphYYY\":2,\"graphId\":\"A21\"},{\"graphXXX\":2,\"graphYYY\":2,\"graphId\":\"A22\"}],\"wordList\":[{\"wordXXX\":2,\"wordYYY\":3,\"fontColor\":\"FF00FF\",\"fontBackColor\":\"00FF00\",\"fontShadowColor\":\"000000\",\"wordSpace\":12,\"fontSize_HH\":32,\"fontSize_WW\":32,\"wordContent\":\"小心驾驶\"},{\"wordXXX\":1,\"wordYYY\":3,\"fontColor\":\"FF00FF\",\"fontBackColor\":\"00FF00\",\"fontShadowColor\":\"000000\",\"wordSpace\":12,\"fontSize_HH\":32,\"fontSize_WW\":32,\"wordContent\":\"安全回家\"}]}]";
+			
+			var msgcontentArr = [];
+			var msgcontentjson = {};
+			msgcontentjson.collnode = 1;
+			msgcontentjson.orgid = 1010;
+			msgcontentjson.deviceid = 22220001;
+			msgcontentjson.devicevarid = 100001;
+			msgcontentjson.devicetypeid = 222201;
+			msgcontentjson.sendcontents = msgcontent;
+			msgcontentArr.push(msgcontentjson);
+			
+			var msgjson = {};
+			msgjson.msgtype = "devicectl";
+			msgjson.msgcontent = JSON.stringify(msgcontentArr);
+			var str = JSON.stringify(msgjson);
+			ws.send(str);
+		}
+		
+		function getNowFormatDate() {
+
+		    var date = new Date();
+
+		    var seperator1 = "-";
+
+		    var seperator2 = ":";
+
+		    var month = date.getMonth() + 1;
+
+		    var strDate = date.getDate();
+
+		    if (month >= 1 && month <= 9) {
+
+		        month = "0" + month;
+
+		    }
+
+		    if (strDate >= 0 && strDate <= 9) {
+
+		        strDate = "0" + strDate;
+
+		    }
+
+		    var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+
+		            + " " + date.getHours() + seperator2 + date.getMinutes()
+
+		            + seperator2 + date.getSeconds();
+
+		    return currentdate;
+		}
+	</script>
+  </head>
+  
+  <body>
+  	<button onclick="sendclick();">发送消息</button>
+    This is my JSP page. <br>
+  </body>
+</html>

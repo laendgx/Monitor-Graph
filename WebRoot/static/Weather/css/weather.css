@@ -1,0 +1,24 @@
+@charset 'utf-8';
+.sw-tables section table tbody:nth-child(odd) {
+    background-color: #fff;
+}
+
+.sw-tables section table tbody:nth-child(even) {
+    background-color: #fff;
+}
+
+.sw-tables section table tbody:hover {
+    background-color: #fff;
+}
+
+.sw-tables section table tbody tr:nth-child(even) {
+    background-color: #f0f0f0;
+}
+
+.sw-tables section table tbody tr:nth-child(odd) {
+    background-color: #fff;
+}
+
+.sw-tables section table tbody tr:hover {
+    background-color: #e8f4ff;
+}

@@ -1,0 +1,76 @@
+<%@ page pageEncoding="UTF-8"%>
+<div class='tplwrap'>
+	<edittpl>
+		<header ng-show='editHeader' ng-hide='!editHeader'>
+			<p>目标情报板：F型情报板</p>
+			<p>已选数量：<span>55</span>块</p>
+			<div>查看明细</div>
+		</header>
+		<browse>
+			<preview>
+				<icwrap ng-style='cmsInfo.cmsSizeDesc | wrapStyle'>
+					<cicon id='{{viewid}}_icon'></cicon>
+			        <cwrap ng-style='cmsInfo.cmsSizeDesc | cmsStyle:textalign:cmsModel.family:cmsModel.size:cmsModel.color:cmsModel.icon' enterposi=-1 enterrow=1>
+		        		<div id='{{viewid}}'>{{editModel | modelview:viewid:cmsInfo.cmsSizeDesc:cmsModel.size:cmsModel.type:cmsModel.time:cmsModel.icon:iconsAddr}}</div>
+			        </cwrap>
+			    </icwrap>
+		    </preview>
+		    <cnav>
+		    	<p ng-repeat='index in cmsInfo.deviceVar[cmsInfo.issuedTypeId].deviceVarValue track by $index' ng-click='cmscompile(index, cmsInfo, viewid, $index)' editclick>{{$index + 1}}</p>
+		    </cnav>
+		</browse>
+	</edittpl>
+	<multitxta>
+	    <btns inputs>
+	        <select ng-model='cmsModel.family' class='type3' ng-change='changeCmsInfo("family", cmsModel.family)'>
+	        	<option value=''>-字体-</option>
+		        <option value='SimHei' ng-selected='SimHei'>黑体</option>
+	        	<option value='SimSun'>宋体</option>
+		        <option value='KaiTi'>楷体</option>
+	        </select>
+	        <select ng-model='cmsModel.size' class='type3' ng-change='changeCmsInfo("fontSize_WW", cmsModel.size)'>
+	        	<option value='' ng-selected='selected'>-字号-</option>
+	        	<option value='16'>16</option>
+	        	<option value='24'>24</option>
+	        	<option value='32'>32</option>
+	        	<option value='48'>48</option>
+	        	<option value='64'>64</option>
+	        </select>
+	        <input type='radio' name='textalign' ng-click='cmsModel.textalign="left"'>
+	        <i class='textleft'></i>
+	        <input type='radio' name='textalign' ng-click='cmsModel.textalign="center"' checked>
+	        <i class='textcenter'></i>
+	        <input type='radio' name='textalign' ng-click='cmsModel.textalign="right"'>
+	        <i class='textright'></i>
+	        <i class='textcolor' ng-style='cmsModel.color | iColor' ng-click='colors=!colors'>
+		        <colors ng-show='colors && cmsInfo.cmsColor!="1"' ng-hide='!colors || cmsInfo.cmsColor=="1"'>
+		        	<i class='yellow' ng-click='cmsModel.color="#FFFF00";stopProp($event);colors=false;changeCmsInfo("fontColor", "FFFF00")'></i>
+		        	<i class='red' ng-click='cmsModel.color="#FF0000";stopProp($event);colors=false;changeCmsInfo("fontColor", "FF0000")'></i>
+		        	<i class='blue' ng-click='cmsModel.color="#00FF00";stopProp($event);colors=false;changeCmsInfo("fontColor", "00FF00")'></i>
+		        </colors>
+		    </i>
+	        <select ng-model='cmsModel.type' class='type1'>
+	        	<option value=''>-出字方式-</option>
+	        	<option value='0' ng-selected='0'>立即显示</option>
+	        </select>
+	        <select ng-model='cmsModel.time' class='type2'>
+	        	<option value=''>-停留时间-</option>
+	        	<option value='3' ng-selected='selected'>3"</option>
+	        	<option value='4'>4"</option>
+	        	<option value='5'>5"</option>
+	        	<option value='6'>6"</option>
+	        	<option value='8'>8"</option>
+	        	<option value='10'>10"</option>
+	        	<option value='12'>12"</option>
+	        	<option value='15'>15"</option>
+	        </select>
+	        <i class='icon' ng-click='icons=!icons'>
+		        <icons ng-show='icons' ng-hide='!icons'>
+		        	<i ng-click='cmsModel.icon=icon;stopProp($event);' ng-repeat='icon in iconsArr' title={{icon}} ng-style='icon | setIcon:iconsAddr'></i>
+		        	<i ng-click='cmsModel.icon="";stopProp($event);' title='取消图片' class='delIcon'></i>
+		        </icons>
+		    </i>
+	    </btns>
+	    <textarea ng-model='editModel' cmstextarea enterposi enterrow></textarea>
+	</multitxta>
+</div>

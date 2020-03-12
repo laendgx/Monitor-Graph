@@ -1,0 +1,33 @@
+<%@ page pageEncoding="UTF-8"%>
+<listwrap>
+	<header listheader>
+		<input type='checkbox' id='{{pollists.id}}'>
+		<label for='{{pollists.id}}'>{{pollists.id}}{{pollists.name}}</label>
+	</header>
+	<listarea listarea>
+		<browse ng-repeat='device in pollists.devices' devtpl>
+		    <header>
+		        <input type='checkbox' id='{{device.deviceId}}' ng-model='device.inp' ng-true-value=true ng-false-value=false ng-click='ich({dev: device.deviceId, org: device.orgId, val: device.inp})'>
+		        <label for='{{device.deviceId}}'>{{device.deviceName}}</label>
+		        <status>通讯故障</status>
+		    </header>
+			<bpreview>
+		        <bcwrap>
+		            <bcms>
+		            	<pwrap >
+		            		<!-- <p ng-repeat='pol in tellists' ng-style='pol.style'>{{pol.text}}</p> ng-change='cmss(tellists.deviceId)' ng-change='cmss(tellists.deviceId)' -->
+		            	</pwrap>
+		            </bcms>
+		        </bcwrap>
+		    </bpreview>
+		    <cnav>
+		    	<!-- <p ng-repeat='index in tellists'>{{$index + 1}}</p> -->
+		    </cnav>
+		    <bottombar>
+		    	<span>详细</span>
+		    	<span>删除节目单</span>
+		    	<span>修改节目单</span>
+		    </bottombar>
+		</browse>
+	</listarea>
+</listwrap>

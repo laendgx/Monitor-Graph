@@ -1,0 +1,192 @@
+(function(angular) {
+
+	var filters = angular.module('app.filters', []);
+
+	filters
+	// 过滤器：筛选区域，去掉‘公路’字样
+	.filter('cutname', function () {
+	    return function (val) {
+		    if (!val){
+		    	return '';
+		    }
+	    	var _val = val.replace(/公路/g,"");
+		  	return _val;
+	    };
+	})
+	// 过滤器：筛选
+	.filter('filtrate', function () {
+	    return function (val, condition) {
+		    if (!val){
+		    	return '';
+		    }
+		    var _lines = condition.lines.removeNull();
+	    	if(_lines.length > 0){
+    			if($.inArray(val.id, _lines) >= 0){
+    				val.lines = true;
+    			} else {
+    				val.lines = false;
+    			}
+	    	} else {
+	    		val.lines = true;
+	    	}
+
+		    var _roads = condition.roads.removeNull();
+	    	if(_roads.length > 0){
+	    		for(var i = 0, l = _roads.length; i < l; i++){
+    				if($.inArray(_roads[i], val.roadArr) >= 0){
+    					val.roads = true;
+    					break;
+    				} else {
+    					val.roads = false;
+    				}
+	    		}
+	    		if(val.roads){
+	    			for(var i = 0, l = val.devices.length; i < l; i++){
+	    				if($.inArray(val.devices[i].roadId, _roads) >= 0){
+		    				val.devices[i].roads = true;
+		    			} else {
+		    				val.devices[i].roads = false;
+		    			}
+	    			}
+	    		}
+	    	} else {
+	    		val.roads = true;
+	    	}
+
+	    	var _position = condition.position.removeNull();
+	    	if(_position.length > 0){
+	    		val.position = false;
+	    		for(var i = 0, l = val.devices.length; i < l; i++){
+	    			if($.inArray(val.devices[i].devicePosition, _position) >= 0){
+	    				val.devices[i].position = true;
+	    			} else {
+	    				val.devices[i].position = false;
+	    			}
+	    		}
+	    	} else {
+	    		val.position = true;
+	    	}
+
+	    	var _direct = condition.direct.removeNull();
+	    	if(_direct.length > 0){
+	    		val.direct = false;
+	    		for(var i = 0, l = val.devices.length; i < l; i++){
+	    			if($.inArray(val.devices[i].deviceDirect, _direct) >= 0){
+	    				val.devices[i].direct = true;
+	    			} else {
+	    				val.devices[i].direct = false;
+	    			}
+	    		}
+	    	} else {
+	    		val.direct = true;
+	    	}
+
+	    	var _types = condition.types.removeNull();
+	    	if(_types.length > 0){
+	    		val.types = false;
+	    		for(var i = 0, l = val.devices.length; i < l; i++){
+	    			if($.inArray(val.devices[i].cmsType, _types) >= 0){
+	    				val.devices[i].types = true;
+	    			} else {
+	    				val.devices[i].types = false;
+	    			}
+	    		}
+	    	} else {
+	    		val.types = true;
+	    	}
+
+	    	return val;
+	    };
+	})
+	// 筛选器标志
+	.filter('filtrateFlag', function () {
+	    return function (val, condition) {
+		    if(condition.lines.length > 0){
+		    	for(var i = 0, l = condition.lines.length; i < l; i++){
+		    		if(condition.lines[i] != '' && typeof(condition.lines[i]) != "undefined"){
+			    		val.lines = false;
+			    		break;
+			    	}
+			    	val.lines = true;
+			    }
+		    }
+		    if(condition.roads.length > 0){
+		    	for(var i = 0, l = condition.roads.length; i < l; i++){
+		    		if(condition.roads[i] != '' && typeof(condition.roads[i]) != "undefined"){
+			    		val.roads = false;
+			    		break;
+			    	}
+			    	val.roads = true;
+			    }
+		    }
+		    if(condition.position.length > 0){
+		    	for(var i = 0, l = condition.position.length; i < l; i++){
+		    		if(condition.position[i] != '' && typeof(condition.position[i]) != "undefined"){
+			    		val.position = false;
+			    		break;
+			    	}
+			    	val.position = true;
+			    }
+		    }
+		    if(condition.direct.length > 0){
+		    	for(var i = 0, l = condition.direct.length; i < l; i++){
+		    		if(condition.direct[i] != '' && typeof(condition.direct[i]) != "undefined"){
+			    		val.direct = false;
+			    		break;
+			    	}
+			    	val.direct = true;
+			    }
+		    }
+		    if(condition.types.length > 0){
+		    	for(var i = 0, l = condition.types.length; i < l; i++){
+		    		if(condition.types[i] != '' && typeof(condition.types[i]) != "undefined"){
+			    		val.types = false;
+			    		break;
+			    	}
+			    	val.types = true;
+			    }
+		    }
+		    return val;
+	    };
+	})
+	// 
+	.filter('setbcstyle', function () {
+	    return function (val) {
+		    if (!val){
+		    	return '';
+		    }
+	    	var _val = val.split('×');
+		  	return {
+		  		width: _val[0] + 'px',
+		  		height: _val[1] + 'px'
+		  	};
+	    };
+	})
+	// 
+	.filter('setpstyle', function () {
+	    return function (val) {
+		    if (!val){
+		    	return '';
+		    }
+		    return {
+		    	'font-size': val.fontSize_HH + 'px',
+		    	'color': '#' + val.fontColor,
+		    	'letter-spacing': val.wordSpace + 'px',
+		    	'top': val.wordYYY + 'px',
+		    	'text-indent': val.wordXXX + 'px',
+		    	'line-height': val.fontSize_HH + 'px'
+		    };
+	    };
+	})
+	// 
+	.filter('setstatuscolor', function () {
+	    return function (val) {
+		    if (!val){
+		    	return '';
+		    }
+		    return {
+		    	'color': val.alertColor
+		    };
+	    };
+	})
+})(angular);

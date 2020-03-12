@@ -1,0 +1,100 @@
+(function(angular){
+
+	var controllers = angular.module('app.controllers', []);
+
+	controllers.controller('pollingController', ['$scope', '$http', '$log', function($scope, $http, $log){
+        $scope.getdataJson = {};
+        $scope.pandect = '';
+        $scope.cmsBasicInf = [];
+        $scope.cmsCount = 0;
+        $scope.cmsChecked = [];
+        $scope.pandectJson = {
+            lines: [],
+            roads: [],
+            position: [],
+            direct: [],
+            types: []
+        };
+        $scope.checkedCmsJson = {
+            cms: []
+        };
+        $scope.ich = function(dev, org, val){
+            if(val){
+                $scope.cmsChecked.push(org + '' + dev);
+                return;
+            }
+            if(!val){
+                while($.inArray((org + '' + dev), $scope.cmsChecked) >= 0){
+                    $scope.cmsChecked.splice($.inArray((org + '' + dev), $scope.cmsChecked), 1);
+                }
+            }
+        };
+        $scope.aaa = function(){
+            console.log($scope.pandectJson)
+        };
+        $scope.pandectThen = function(data){
+            $scope.pandect = data.data;
+        };
+        $scope.cbiThen = function(data){
+            var _data = data.data;
+            $scope.cmsCount = _data.length;
+            for(var i = 0, l = _data.length; i < l; i++){
+                (function(i){
+                    var j = 0, jl = $scope.cmsBasicInf.length;
+                    for(; j < jl; j++){
+                        if($scope.cmsBasicInf[j].id == _data[i].routeLineId){
+                            if($.inArray(_data[i].roadId, $scope.cmsBasicInf[j].roadArr) < 0){
+                                $scope.cmsBasicInf[j].roadArr.push(_data[i].roadId);
+                            }
+                            $scope.cmsBasicInf[j].devices.push(_data[i]);
+                            break;
+                        }
+                    }
+                    if(j === jl){
+                        $scope.cmsBasicInf[jl] = {};
+                        $scope.cmsBasicInf[jl].id = _data[i].routeLineId;
+                        $scope.cmsBasicInf[jl].name = _data[i].routeLineName;
+                        $scope.cmsBasicInf[jl].roadArr = [];
+                        $scope.cmsBasicInf[jl].roadArr.push(_data[i].roadId);
+                        $scope.cmsBasicInf[jl].devices = [];
+                        $scope.cmsBasicInf[jl].devices.push(_data[i]);
+                    }
+                })(i);
+            }
+        };
+        $scope.resetPandect = function(){
+            alert(1);
+            for(var i in $scope.pandectJson){
+                $scope.pandectJson[i] = [];
+            }
+        };
+
+
+
+
+
+
+
+        $scope.getdata = function(url, data, successFn, errorFn){
+            $http({
+                method: 'POST',
+                url: basepath + url + '?ran=' + Math.random(),
+                data: data,
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8'
+                }  
+            })
+            .then(function(resp){
+                successFn(resp);
+            }, function(resp){
+                errorFn(resp);
+            });
+        };
+
+        $(window).ready(function(){
+            $scope.getdata('/cms/getSearchCondition.from', JSON.stringify($scope.getdataJson), $scope.pandectThen);
+            $scope.getdata('/cms/getCmsBasicInfos.from', JSON.stringify($scope.getdataJson), $scope.cbiThen);
+        });
+	}])
+})(angular);
+

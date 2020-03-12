@@ -1,0 +1,15 @@
+<%@ page pageEncoding="UTF-8"%>
+<browse>
+	<preview>
+        <cwrap ng-style='info.cmsSizeDesc | cmsStyle'>
+            <cms>
+            	<pwrap ng-repeat='index in info.deviceVar[info.issuedTypeId].deviceVarValue'>
+            		<p ng-repeat='tabp in index.wordList' ng-style='tabp | pStyle'>{{tabp.wordContent}}</p>
+            	</pwrap>
+            </cms>
+        </cwrap>
+    </preview>
+    <cnav>
+    	<p ng-repeat='index in info.deviceVar[info.issuedTypeId].deviceVarValue'>{{$index + 1}}</p>
+    </cnav>
+</browse>
